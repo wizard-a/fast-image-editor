@@ -1,9 +1,21 @@
+import React, { FC } from 'react';
 import styles from './index.less';
+import { Canvas, Layout } from '../components';
 
-export default function IndexPage() {
+const { Header, Content, SliderLeft, SliderRight } = Layout;
+export interface IIndexProps {}
+
+const Index: FC<IIndexProps> = (props) => {
   return (
-    <div>
-      <h1 className={styles.title}>Page index</h1>
-    </div>
+    <Layout>
+      <Header />
+      <Content>
+        <SliderLeft></SliderLeft>
+        <Canvas></Canvas>
+        <SliderRight></SliderRight>
+      </Content>
+    </Layout>
   );
-}
+};
+
+export default Index;

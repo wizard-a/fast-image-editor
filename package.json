@@ -20,9 +20,16 @@
     ]
   },
   "dependencies": {
+    "@ant-design/pro-form": "^1.33.1",
     "@ant-design/pro-layout": "^6.5.0",
+    "@ant-design/pro-table": "^2.47.1",
     "@umijs/preset-react": "1.x",
-    "umi": "^3.5.3"
+    "immer": "^9.0.5",
+    "konva": "^8.1.1",
+    "react-konva": "^17.0.2-4",
+    "umi": "^3.5.3",
+    "use-image": "^1.0.7",
+    "use-immer": "^0.6.0"
   },
   "devDependencies": {
     "@types/react": "^17.0.0",
