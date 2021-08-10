@@ -10,6 +10,7 @@ import {
   BorderOuterOutlined,
 } from '@ant-design/icons';
 import { useImmer } from 'use-immer';
+import TextPanel from './text-panel';
 import styles from './slider.less';
 
 const itemData = [
@@ -62,7 +63,9 @@ const Slider: FC<IHeaderProps> = (props) => {
           );
         })}
       </div>
-      <div className={styles.area}></div>
+      <div className={styles.area}>
+        {state.active === 'text' && <TextPanel />}
+      </div>
     </div>
   );
 };

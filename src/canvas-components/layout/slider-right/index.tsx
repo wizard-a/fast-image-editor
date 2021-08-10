@@ -7,12 +7,12 @@ import styles from './slider.less';
 export interface IHeaderProps {}
 
 const Slider: FC<IHeaderProps> = (props) => {
-  const { canvasModel } = useModel('useCanvasModel', (model) => ({
-    canvasModel: model.canvasModel,
+  const { canvas } = useModel('useCanvasModel', (model) => ({
+    canvas: model.canvas,
   }));
 
   const getPanelJsx = useCallback(() => {
-    switch (canvasModel.shapePanelType) {
+    switch (canvas.shapePanelType) {
       case ShapePanelEnum.ShapePanel:
         return <CanvasPanel />;
       case ShapePanelEnum.TextPanel:
@@ -20,7 +20,7 @@ const Slider: FC<IHeaderProps> = (props) => {
       default:
         break;
     }
-  }, [canvasModel.shapePanelType]);
+  }, [canvas.shapePanelType]);
 
   return <div className={styles.slider}>{getPanelJsx()}</div>;
 };

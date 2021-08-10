@@ -1,33 +1,36 @@
 import { useState, useCallback } from 'react';
 import { useImmer } from 'use-immer';
 import { ShapePanelEnum } from '@/enum';
+import { DatModelItem } from '@/typing';
+import Konva from 'konva';
 
-type CanvasModel = {
-  width: number;
-  height: number;
-  shapePanelType: ShapePanelEnum;
+/**
+ * 用于描述画布上的属性
+ */
+type Canvas = {
+  shapePanelType: ShapePanelEnum; // 右侧panel显示的类型
+  selectNode: DatModelItem | null;
 };
 
-export default function useAuthModel() {
-  const [canvasModel, setCanvasModel] = useImmer<CanvasModel>({
-    width: 300,
-    height: 300,
+type Transformer = {
+  isSelected: boolean;
+};
+
+export default function useCanvas() {
+  const [canvas, setCanvas] = useImmer<Canvas>({
     shapePanelType: ShapePanelEnum.ShapePanel, // 用枚举代替
+    selectNode: null,
   });
+  const [transformer, setTransformer] = useImmer<any>({});
 
-  // const signin = useCallback((account, password) => {
-  //   // signin implementation
-  //   // setUser(user from signin API)
-  // }, [])
-
-  const changeCanvasModel = useCallback((currCanvasModel) => {
-    setCanvasModel((draft) => {
+  const changeCanvas = useCallback((currCanvasModel) => {
+    setCanvas((draft) => {
       Object.assign(draft, currCanvasModel);
     });
   }, []);
 
   return {
-    canvasModel,
-    changeCanvasModel,
+    canvas,
+    changeCanvas,
   };
 }

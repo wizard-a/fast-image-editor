@@ -10,6 +10,7 @@ import ProForm, {
 import { useModel } from 'umi';
 import { useImmer } from 'use-immer';
 import type { RadioChangeEvent } from 'antd';
+import { ColorSelect } from '@/components';
 import styles from './canvasPanel.less';
 
 export interface ICanvasPanelProps {}
@@ -21,23 +22,17 @@ const canvasOptions = [
 
 const CanvasPanel: FC<ICanvasPanelProps> = (props) => {
   const [form] = Form.useForm();
-  const { canvasModel, changeCanvasModel } = useModel(
-    'useCanvasModel',
-    (model) => ({
-      canvasModel: model.canvasModel,
-      changeCanvasModel: model.changeCanvasModel,
-    }),
-  );
+  const { canvasModel } = useModel('useCanvasDataModel');
 
   const [state, setState] = useImmer({
     canvasOptionsValue: 'color',
   });
   const onVisibleChange = (visible: boolean) => {
     if (visible) {
-      form.setFieldsValue({
-        width: canvasModel.width,
-        height: canvasModel.height,
-      });
+      // form.setFieldsValue({
+      //   width: canvas.width,
+      //   height: canvas.height,
+      // });
     }
   };
 
@@ -53,7 +48,7 @@ const CanvasPanel: FC<ICanvasPanelProps> = (props) => {
       <div className={styles.item}>
         <div className={styles.title}>
           <div>画布尺寸</div>
-          <ModalForm<{
+          {/* <ModalForm<{
             width: number;
             height: number;
           }>
@@ -73,7 +68,7 @@ const CanvasPanel: FC<ICanvasPanelProps> = (props) => {
               onCancel: () => console.log('run'),
             }}
             onFinish={async (values) => {
-              changeCanvasModel(values);
+              changeCanvas(values);
               // return Promise.resolve(true);
               return true;
             }}
@@ -90,7 +85,7 @@ const CanvasPanel: FC<ICanvasPanelProps> = (props) => {
               label="高"
               placeholder="请输入高度"
             />
-          </ModalForm>
+          </ModalForm> */}
         </div>
 
         <div className={styles.content}>
@@ -112,6 +107,9 @@ const CanvasPanel: FC<ICanvasPanelProps> = (props) => {
             optionType="button"
             buttonStyle="solid"
           />
+        </div>
+        <div>
+          <ColorSelect />
         </div>
       </div>
     </div>

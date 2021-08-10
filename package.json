@@ -26,6 +26,7 @@
     "@umijs/preset-react": "1.x",
     "immer": "^9.0.5",
     "konva": "^8.1.1",
+    "react-color": "^2.19.3",
     "react-konva": "^17.0.2-4",
     "umi": "^3.5.3",
     "use-image": "^1.0.7",
