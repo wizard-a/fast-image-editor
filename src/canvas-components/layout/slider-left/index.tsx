@@ -1,27 +1,37 @@
 import React, { FC } from 'react';
 import classNames from 'classnames';
 import { Tooltip } from 'antd';
-import {
-  HomeOutlined,
-  SettingFilled,
-  SmileOutlined,
-  SyncOutlined,
-  LoadingOutlined,
-  BorderOuterOutlined,
-} from '@ant-design/icons';
+import { BorderOuterOutlined } from '@ant-design/icons';
 import { useImmer } from 'use-immer';
 import TextPanel from './text-panel';
+import ImagePanel from './image-panel';
+import TemplatePanel from './template-panel';
 import styles from './slider.less';
 
 const itemData = [
+  {
+    id: 'template',
+    name: '模板',
+    icon: <BorderOuterOutlined style={{ fontSize: 24, color: '#fff' }} />,
+  },
   {
     id: 'text',
     name: '文字',
     icon: <BorderOuterOutlined style={{ fontSize: 24, color: '#fff' }} />,
   },
   {
+    id: 'image',
+    name: '图片',
+    icon: <BorderOuterOutlined style={{ fontSize: 24, color: '#fff' }} />,
+  },
+  {
     id: 'label',
     name: '标记',
+    icon: <BorderOuterOutlined style={{ fontSize: 24, color: '#fff' }} />,
+  },
+  {
+    id: 'background',
+    name: '背景',
     icon: <BorderOuterOutlined style={{ fontSize: 24, color: '#fff' }} />,
   },
 ];
@@ -30,7 +40,7 @@ export interface IHeaderProps {}
 
 const Slider: FC<IHeaderProps> = (props) => {
   const [state, setState] = useImmer({
-    active: 'text',
+    active: 'template',
   });
 
   const handleItemClick = (key: string) => {
@@ -64,7 +74,9 @@ const Slider: FC<IHeaderProps> = (props) => {
         })}
       </div>
       <div className={styles.area}>
+        {state.active === 'template' && <TemplatePanel />}
         {state.active === 'text' && <TextPanel />}
+        {state.active === 'image' && <ImagePanel />}
       </div>
     </div>
   );

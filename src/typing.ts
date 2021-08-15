@@ -3,11 +3,13 @@ import Konva from 'konva';
 /**
  * 画布内元素类型
  */
-export type ElementType = 'color' | 'image' | 'text' | 'rect';
+export type ElementType = 'color' | 'image' | 'text' | 'rect' | 'text-input';
 
 export type BaseModel = {
   id: string;
   type: ElementType;
+  x: number;
+  y: number;
 };
 
 /**

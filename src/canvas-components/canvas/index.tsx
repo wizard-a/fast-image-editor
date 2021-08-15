@@ -1,56 +1,93 @@
-import React, { FC, useRef, useEffect, useState, useCallback } from 'react';
-import { Stage, Layer, Rect, Text, Image, Transformer } from 'react-konva';
+import React, {
+  FC,
+  useRef,
+  useEffect,
+  useState,
+  useCallback,
+  useMemo,
+} from 'react';
+import { Stage, Layer, Rect, Text } from 'react-konva';
 import Konva from 'konva';
-import { Button } from 'antd';
-import styles from './canvas.less';
-import useImage from 'use-image';
-import { useModel } from 'umi';
 import TransformerWrapper from '../transformer-wrapper';
+import { TextInput, ContextMenu, Image, Toolbar } from '@/components';
+import useModel from 'flooks';
+import canvasDataModel from '@/models1/canvasDataModel';
+import canvasModel from '@/models1/canvasModel';
+import { useClickAway, useSize } from 'ahooks';
 import type { DatModelItem, BgModel, TextModel } from '@/typing';
+import styles from './canvas.less';
 
 export interface ICanvasProps {}
 
-const LionImage = () => {
-  const [image] = useImage(
-    'https://img0.baidu.com/it/u=3880341262,3308316348&fm=26&fmt=auto&gp=0.jpg',
-  );
-  const imageRef = useRef<any>();
-  useEffect(() => {
-    // debugger;
-    // imageRef.current.
-    // debugger;
-    // imageRef.current.setZIndex(-1)
-    console.log('imagesRef', imageRef);
-    // imageRef.current
-  }, []);
-
-  return <Image ref={imageRef} width={300} height={500} image={image} />;
-};
+const TransformerTextInput = TransformerWrapper(TextInput);
+const TransformerText = TransformerWrapper(Text);
+const TransformerImage = TransformerWrapper(Image);
+// const TransformerHtml2 = TransformerWrapper(Group);
 
 const Canvas: FC<ICanvasProps> = (props) => {
-  const { canvasModel } = useModel('useCanvasDataModel', (model) => ({
-    canvasModel: model.canvasModel,
-  }));
+  // const { stageRef, stageData, changeCanvas } = useModel(canvasModel);
+  const { width, height, nodes } = useModel(canvasDataModel);
+  const { changeCanvas, selectNode, stageData } = useModel(canvasModel);
+  const ref = useRef<HTMLDivElement>(null);
+  const stageRef = useRef<Konva.Stage>(null);
+  const layerRef = useRef<Konva.Layer>(null);
+  const bgRef = useRef<Konva.Rect>(null);
+  const size = useSize(ref);
 
-  // const { canvas, changeCanvas } = useModel('useCanvasModel', (model) => ({
-  //   canvas: model.canvas,
-  //   changeCanvas: model.changeCanvas,
-  // }));
-
-  const layerRef = useRef();
-  const imageRef = useRef<any>();
-
-  const [flag, setFlag] = useState(false);
-
-  const TransformerText = TransformerWrapper(Text);
-
+  window.stageRef = stageRef;
   useEffect(() => {
-    // debugger;
-    // console.log('imagesRef', imageRef);
-    // imageRef.current
+    // changeCanvas({
+    //   stageRef,
+    //   layerRef,
+    //   bgRef: bgRef,
+    //   canvasRef: ref,
+    //   // stageData: {
+    //   //   ...stageData,
+    //   //   // scale: Math.min(scaleX, scaleY),
+    //   // }
+    // });
+    if (ref.current) {
+      const scaleX = (ref.current.offsetHeight - 120) / stageData.height;
+      const scaleY = (ref.current.offsetWidth - 120) / stageData.width;
+      let scale = Math.min(scaleX, scaleY);
+      if (scale > 1) scale = 1;
+      changeCanvas({
+        stageRef,
+        layerRef,
+        bgRef: bgRef,
+        canvasRef: ref,
+        stageData: {
+          ...stageData,
+          width: width * scale,
+          height: height * scale,
+          scale,
+        },
+      });
+    }
   }, []);
 
-  // console.log('currCanvas=>', canvas);
+  useEffect(() => {
+    // canvasRef
+    if (ref.current) {
+      const left = (ref.current.scrollWidth - ref.current.offsetWidth) / 2;
+      const top = (ref.current.scrollHeight - ref.current.offsetHeight) / 2;
+      // console.log('top', top, left)
+      ref.current.scrollLeft = left;
+      ref.current.scrollTop = top;
+    }
+  }, [stageData.scale, size]);
+
+  const changeCanvasPanel = () => {
+    changeCanvas({
+      selectNode: nodes[0],
+      editNode: null,
+    });
+  };
+
+  // useClickAway(() => {
+  //   console.log('=====>')
+  //   changeCanvasPanel();
+  // }, ref);
 
   const getJsxItem = (item: DatModelItem) => {
     switch (item.type) {
@@ -58,61 +95,82 @@ const Canvas: FC<ICanvasProps> = (props) => {
         const bgModel = item as BgModel;
         return (
           <Rect
+            ref={bgRef}
             key={item.id}
-            width={canvasModel.width}
-            height={canvasModel.height}
+            width={width}
+            height={height}
             fill={bgModel.color}
             shadowBlur={10}
-            setZIndex={1}
           />
         );
-      case 'image':
-        break;
       case 'text':
         const textModel = item as TextModel;
         // console.log('textModel', textModel)
         return <TransformerText key={item.id} draggable {...textModel} />;
 
+      case 'text-input':
+        const textInputModel = item as TextModel;
+        // console.log('textInputModel', textInputModel)
+        return (
+          <TransformerTextInput key={item.id} draggable {...textInputModel} />
+        );
+
+      case 'image':
+        return <TransformerImage key={item.id} draggable {...item} />;
       default:
         break;
     }
   };
 
   const getJsx = () => {
-    return canvasModel.nodes.map((item) => {
+    return nodes.map((item: DatModelItem) => {
       return getJsxItem(item);
+    });
+  };
+  const onStageClick = (e: any) => {
+    Promise.resolve().then(() => {
+      // 事件消息有延时
+      if (e?.type !== 'dblclick') {
+        // console.log('onStageClick', e?.currentTarget?.nodeType, JSON.stringify(e), e);
+        changeCanvasPanel();
+      }
     });
   };
 
   const content = getJsx();
-  console.log('content=>', content);
+  // console.log('content=>', content);
+  const top =
+    ref.current && stageData.height - (ref.current.clientHeight - 120) > 0
+      ? stageData.height - (ref.current.clientHeight - 120)
+      : 0;
+  const left =
+    ref.current && stageData.width - (ref.current.clientWidth - 120) > 0
+      ? stageData.width - (ref.current.clientWidth - 120)
+      : 0;
+  // const top = stageData.height - 835 >= 0 ? stageData.height - 835 : 0;
+  // const left = stageData.width - 0 >= 0 ? stageData.width - 0 : 0;
+  const style = {
+    marginTop: top,
+    marginLeft: left,
+  };
+  //
+  // console.log('ref.current.scrollHeight', stageData.height, height, 835, 955, style)
   return (
-    <div className={styles.canvas}>
-      {/* <div>
-        <Button
-          onClick={() => {
-            setFlag(!flag);
-          }}
+    <div className={styles.canvas} ref={ref}>
+      <ContextMenu />
+      <Toolbar />
+      <div style={style}>
+        <Stage
+          width={stageData.width}
+          height={stageData.height}
+          scaleX={stageData.scale}
+          scaleY={stageData.scale}
+          ref={stageRef}
+          onClick={onStageClick}
         >
-          切换背景
-        </Button>
-      </div> */}
-      <Stage width={canvasModel.width} height={canvasModel.height}>
-        <Layer width={canvasModel.width} height={canvasModel.height}>
-          {content}
-          {/* {flag ? (
-            <LionImage />
-          ) : (
-            <Rect
-              width={canvasModel.width}
-              height={canvasModel.height}
-              fill="red"
-              shadowBlur={10}
-            />
-          )}
-          <Text draggable text="Try click on rect" /> */}
-        </Layer>
-      </Stage>
+          <Layer ref={layerRef}>{content}</Layer>
+        </Stage>
+      </div>
     </div>
   );
 };

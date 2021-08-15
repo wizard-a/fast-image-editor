@@ -1,0 +1,131 @@
+// ui框架 class 前缀
+@fast-prefix: 'fast';
+
+// base
+@font-size-sm: 12px;
+@font-size-base: 14px;
+@font-size-lg: @font-size-base + 2px;
+
+// paddings
+@padding-lg: 24px;
+@padding-md: 16px;
+@padding-sm: 12px;
+@padding-xs: 8px;
+
+// margins
+@margin-lg: 24px;
+@margin-md: 16px;
+@margin-sm: 12px;
+@margin-xs: 8px;
+
+// height rules
+@height-base: 32px;
+@height-lg: 40px;
+@height-sm: 24px;
+
+/** 头部导航*/
+@header-bg-color:rgb (16, 38, 58);
+@header-select-bg-color:rgb (25, 118, 210);
+@header-avatar:rgb (0, 57, 108);
+@header-default-font-color: #e4e6ea;
+@header-default-font-color:rgb (228, 230, 234);
+@header-menu-height: 50px;
+@header-submenu-height: 40px;
+
+/** 默认设置*/
+@blue:rgb (25, 118, 210);
+@black: rgb(0, 0, 0);
+@activeColor: #1890ff;
+@focusColor: #40a9ff;
+
+//超链接，已选中，确认、提交按钮底色
+@default-color: fade(@blue, 100%);
+// 字体超链接
+@default-link-color: fade(@blue, 85%);
+// 列表hover状态背景底色
+@default-bg-color: fade(@blue, 9%);
+// 暂时未找到已用的
+@box-shadow-color: #d5dfe8;
+
+// 图表成功色
+@chart-color: rgba(19, 194, 194);
+
+/** line up 排队中*/
+@line-up-color: rgba(28, 122, 238);
+
+// 项目提示框颜色区份
+
+/** warning（橘黄色） 异常，未发布，未部署 */
+@warn-icon-color: rgba(250, 173, 20);
+/** warning 提示色背景 */
+@warn-bg-color: rgba(255, 251, 230);
+/** warning 提示色边框 */
+@warn-bor-color: rgba(255, 229, 143);
+
+/** success（绿色） 提示色icon 成功色, 已部署，部署成功，已上线 */
+@suc-icon-color: rgba(82, 196, 26);
+/** success 提示色背景 */
+@suc-bg-color: rgba(246, 255, 237);
+/** success 提示色边框 */
+@suc-bor-color: rgba(183, 235, 143);
+
+/** fail（红色） 失败 */
+@fail-icon-color: rgba(245, 34, 45);
+/** fail 提示色背景 */
+@fail-bg-color: rgba(255, 241, 240);
+/** fail 提示色边框 */
+@fail-bor-color: rgba(255, 163, 158);
+
+/** 通知(蓝色) 运行中，发布中 */
+@mes-icon-color: @default-color;
+/** 通知 提示色背景 */
+@mes-bg-color: rgba(230, 247, 255);
+/** 通知 提示色边框 */
+@mes-bor-color: rgba(145, 213, 255);
+
+//Font  文本颜色
+// 面包屑当前项
+@fontColor: rgb(16, 38, 58);
+
+@default-font-color: @fontColor;
+// 主标题文字颜色（form中label标题）
+@default-font-title-color:fade (@fontColor, 85%);
+// 正文颜色，输入类文字颜色，操作类涉及文字，鼠标划过hover文字颜色,状态提示类文字，tab无底色时选中状态，icon默认颜色
+@title-font-color:fade (@fontColor, 65%);
+// 次文字颜色，placeholder颜色，tab无底色时未选中状态
+@minor-font-color:fade (@fontColor, 45%);
+// input disable文字颜色，icon disabled状态设计颜色
+@font-disable-color:fade (@fontColor, 25%);
+// 分割线颜色，input默认边框。
+@font-border-color:fade (@fontColor, 15%);
+//鼠标划过hover文字颜色
+@hover-font-color: fade(@fontColor, 85%);
+
+/** 按钮*/
+@btn-default-bg: @default-color;
+@btn-default-hover-color: @default-color;
+@btn-delete-bg: #e0714f;
+@btn-delete-hover-color: #e0653f;
+// @btn-gray-color:@text-color;
+@btn-gray-bg: #fff;
+@default-white-bg: #fff;
+
+/** 分割线  */
+@divider-color:fade (@fontColor, 15%);
+
+/** input*/
+@input-hover-color: #0c71ed;
+@input-focus-color: #196dd4;
+
+/** slider*/
+@slider-color: #e7edf5;
+// @bg-color:fade(@fontColor, 9%);
+@bg-slider-color: rgba(19, 194, 194, 0.1);
+@bg-slider-fill-color: rgba(19, 194, 194);
+@bg-color:rgba (16, 38, 58, 0.04);
+
+// 组件/浮层圆角
+@border-radius-base: 4px;
+
+@disabled-color: #f5f5f5;
+@border-color-base: #d9d9d9;

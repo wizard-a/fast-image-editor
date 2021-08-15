@@ -1,8 +1,21 @@
-import React, { FC, useRef, useEffect, useState, useCallback } from 'react';
+import React, {
+  FC,
+  useRef,
+  useEffect,
+  useState,
+  useCallback,
+  memo,
+} from 'react';
 import { Stage, Layer, Rect, Transformer } from 'react-konva';
-import { useModel } from 'umi';
+// import { useModel } from 'umi';
 import type { DataModel, DatModelItem } from '@/typing';
+import { useTimeout } from 'ahooks';
+import { useDebounceFn } from 'ahooks';
 import Konva from 'konva';
+import useModel from 'flooks';
+import { isEqual } from '@/utils/util';
+import canvasDataModel from '@/models1/canvasDataModel';
+import canvasModel from '@/models1/canvasModel';
 
 type BaseProps = {
   [key: string]: any;
@@ -17,47 +30,90 @@ export interface ITransformerWrapperProps {
 }
 
 const TransformerWrapper = (Component: FC<BaseProps>) => {
-  const { canvas, changeCanvas } = useModel('useCanvasModel', (model) => ({
-    canvas: model.canvas,
-    changeCanvas: model.changeCanvas,
-  }));
-
-  const { changeCanvasModelDataItem } = useModel('useCanvasDataModel');
-
   const WrapperComponent: FC<BaseProps> = (props) => {
+    const { selectNode, shapePanelType, changeCanvas, editNode } =
+      useModel(canvasModel);
+    const { changeCanvasModelDataItem } = useModel(canvasDataModel);
+
     const shapeRef = React.useRef<any>();
     const trRef = React.useRef<any>();
+    const currScale = React.useRef<any>();
 
-    const isSelected = props.id === canvas?.selectNode?.id;
+    const isSelected = props.id === selectNode?.id && props.id !== editNode?.id;
 
-    console.log(
-      'isSelected',
-      isSelected,
-      props,
-      canvas?.selectNode?.id,
-      canvas,
+    // console.log(
+    //   'isSelected',
+    //   isSelected,
+    //   props,
+    //   selectNode?.id
+    // );
+
+    const { run } = useDebounceFn(
+      (e) => {
+        console.log('onSelect=>执行了');
+        // 阻止事件冒泡
+        e.cancelBubble = true;
+
+        changeCanvas({
+          selectNode: props,
+        });
+      },
+      { wait: 300, leading: true, trailing: false },
     );
-    const onSelect = () => {
-      changeCanvas({
-        selectNode: props,
-      });
-    };
 
     useEffect(() => {
       if (isSelected) {
         // we need to attach transformer manually
         trRef.current.nodes([shapeRef.current]);
+        trRef.current.node = shapeRef.current;
         trRef.current.getLayer().batchDraw();
+
+        currScale.current = {
+          scaleX: shapeRef.current.scaleX(),
+          scaleY: shapeRef.current.scaleY(),
+        };
       }
+
+      return () => {
+        console.log('hooks destory');
+      };
     }, [isSelected]);
+
+    const onTransform = () => {
+      if (props.type !== 'text-input') {
+        //只有text-input处理
+        return;
+      }
+      const node = shapeRef.current;
+      const scaleX = node.scaleX();
+      const scaleY = node.scaleY();
+
+      if (
+        !isEqual(scaleX, currScale.current.scaleX) &&
+        !isEqual(scaleY, currScale.current.scaleY)
+      ) {
+        // 反方向会出错
+        // isEqual(scaleX, currScale.current.scaleX)
+        // console.log('===============>',scaleX, scaleY, isEqual(scaleX, currScale.current.scaleX), isEqual(scaleY, currScale.current.scaleY))
+        return;
+      }
+      const currItem: any = {
+        ...props,
+        width: node.width() * scaleX,
+        // height: node.height() * scaleY,
+        scaleX: 1,
+      };
+      changeCanvasModelDataItem(currItem as DatModelItem);
+    };
 
     return (
       <React.Fragment>
         <Component
-          onClick={onSelect}
-          onTap={onSelect}
+          onClick={run}
+          // onTap={run}
           ref={shapeRef}
           {...props}
+          isSelected={isSelected}
           draggable={isSelected}
           onDragEnd={(e: Konva.KonvaEventObject<DragEvent>) => {
             changeCanvasModelDataItem({
@@ -66,43 +122,51 @@ const TransformerWrapper = (Component: FC<BaseProps>) => {
               y: e.target.y(),
             } as DatModelItem);
           }}
+          onTransform={onTransform}
           onTransformEnd={(e: Konva.KonvaEventObject<Event>) => {
-            // transformer is changing scale of the node
-            // and NOT its width or height
-            // but in the store we have only width and height
-            // to match the data better we will reset scale on transform end
             const node = shapeRef.current;
             const scaleX = node.scaleX();
             const scaleY = node.scaleY();
             // we will reset it back
             node.scaleX(1);
             node.scaleY(1);
-            // debugger;
             // console.log('scaleX=>', scaleX, scaleY);
-            changeCanvasModelDataItem({
+            const currItem: any = {
               ...props,
               x: node.x(),
               y: node.y(),
-              fontSize: node.getFontSize() * scaleX,
+              scaleX: 1,
               width: Math.max(5, node.width() * scaleX),
               height: Math.max(node.height() * scaleY),
-            } as DatModelItem);
+            };
+            if (props.fontSize) {
+              currItem.fontSize = props.fontSize * scaleY;
+            }
+            changeCanvasModelDataItem(currItem as DatModelItem);
           }}
         />
         {isSelected && (
           <Transformer
             ref={trRef}
+            // scaleX
             enabledAnchors={[
               'top-left',
               'top-right',
               'bottom-left',
               'bottom-right',
+              'middle-left',
+              'middle-right',
             ]}
             boundBoxFunc={(oldBox, newBox) => {
-              // limit resize
-              if (newBox.width < 5 || newBox.height < 5) {
-                return oldBox;
-              }
+              // console.log('newBox', newBox);
+              // 新盒子和旧盒子的宽度
+              // const currItem = {
+              //   ...props,
+              //   height: newBox.height,
+              //   width: newBox.width
+              // }
+              // changeCanvasModelDataItem(currItem as DatModelItem);
+              newBox.width = Math.max(30, newBox.width);
               return newBox;
             }}
           />
@@ -114,68 +178,3 @@ const TransformerWrapper = (Component: FC<BaseProps>) => {
 };
 
 export default TransformerWrapper;
-
-// const Rectangle = ({ shapeProps, isSelected, onSelect, onChange }) => {
-//   const shapeRef = React.useRef();
-//   const trRef = React.useRef();
-
-//   React.useEffect(() => {
-//     if (isSelected) {
-//       // we need to attach transformer manually
-//       trRef.current.nodes([shapeRef.current]);
-//       trRef.current.getLayer().batchDraw();
-//     }
-//   }, [isSelected]);
-
-//   return (
-//     <React.Fragment>
-//       <Rect
-//         onClick={onSelect}
-//         onTap={onSelect}
-//         ref={shapeRef}
-//         {...shapeProps}
-//         draggable
-//         onDragEnd={(e) => {
-//           onChange({
-//             ...shapeProps,
-//             x: e.target.x(),
-//             y: e.target.y(),
-//           });
-//         }}
-//         onTransformEnd={(e) => {
-//           // transformer is changing scale of the node
-//           // and NOT its width or height
-//           // but in the store we have only width and height
-//           // to match the data better we will reset scale on transform end
-//           const node = shapeRef.current;
-//           const scaleX = node.scaleX();
-//           const scaleY = node.scaleY();
-
-//           // we will reset it back
-//           node.scaleX(1);
-//           node.scaleY(1);
-//           onChange({
-//             ...shapeProps,
-//             x: node.x(),
-//             y: node.y(),
-//             // set minimal value
-//             width: Math.max(5, node.width() * scaleX),
-//             height: Math.max(node.height() * scaleY),
-//           });
-//         }}
-//       />
-//       {isSelected && (
-//         <Transformer
-//           ref={trRef}
-//           boundBoxFunc={(oldBox, newBox) => {
-//             // limit resize
-//             if (newBox.width < 5 || newBox.height < 5) {
-//               return oldBox;
-//             }
-//             return newBox;
-//           }}
-//         />
-//       )}
-//     </React.Fragment>
-//   );
-// };

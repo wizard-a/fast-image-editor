@@ -1,13 +1,15 @@
+@import '../../../styles/index.less';
+
 .slider {
   height: 100%;
   width: 320px;
-  background: rgba(16, 38, 58, 0.02);
+  background: @bg-color;
   display: flex;
-  border-right: 1px solid rgba(16, 38, 58, 0.15);
+  border-right: 1px solid @font-border-color;
   .toolbar {
     width: 60px;
-    border-right: 1px solid rgba(16, 38, 58, 0.15);
-    background: rgba(16, 38, 58, 0.06);
+    border-right: 1px solid @font-border-color;
+    background: @bg-color;
 
     .item {
       display: flex;

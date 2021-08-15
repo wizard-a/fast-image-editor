@@ -36,6 +36,17 @@ const initData: DataModel = [
     // fontSize: 22,
     fill: '#000',
   },
+  {
+    x: 150,
+    y: 150,
+    id: '5',
+    type: 'text-input',
+    text: '双击编辑文字',
+    fontSize: 50,
+    fill: '#000',
+    width: 300,
+    height: 50,
+  },
 ];
 
 export default function useCanvasData() {
@@ -77,7 +88,7 @@ export default function useCanvasData() {
       y,
       id: uuid(),
       fontSize: 60,
-      type: 'text',
+      type: 'text-input',
       text: '双击编辑文字',
       fill: '#000',
       width: textWidth,

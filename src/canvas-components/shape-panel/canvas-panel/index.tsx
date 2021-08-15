@@ -7,10 +7,12 @@ import ProForm, {
   ProFormDateRangePicker,
   ProFormDigit,
 } from '@ant-design/pro-form';
-import { useModel } from 'umi';
 import { useImmer } from 'use-immer';
 import type { RadioChangeEvent } from 'antd';
 import { ColorSelect } from '@/components';
+import useModel from 'flooks';
+import canvasDataModel from '@/models1/canvasDataModel';
+import canvasModel from '@/models1/canvasModel';
 import styles from './canvasPanel.less';
 
 export interface ICanvasPanelProps {}
@@ -22,7 +24,9 @@ const canvasOptions = [
 
 const CanvasPanel: FC<ICanvasPanelProps> = (props) => {
   const [form] = Form.useForm();
-  const { canvasModel } = useModel('useCanvasDataModel');
+  const { width, height, changeCanvasModelDataItem, changeCanvasModel } =
+    useModel(canvasDataModel);
+  const { selectNode, changeCanvas } = useModel(canvasModel);
 
   const [state, setState] = useImmer({
     canvasOptionsValue: 'color',
@@ -42,6 +46,15 @@ const CanvasPanel: FC<ICanvasPanelProps> = (props) => {
     });
   };
 
+  const colorChange = (color: string) => {
+    console.log('color=>', color);
+    changeCanvasModelDataItem({
+      ...selectNode,
+      color,
+    });
+  };
+
+  // console.log('selectNode?.color=>', selectNode?.color)
   return (
     <div className={styles.canvasPanel}>
       <PanelTitle>画布</PanelTitle>
@@ -56,10 +69,10 @@ const CanvasPanel: FC<ICanvasPanelProps> = (props) => {
             title="调整画布尺寸"
             layout="horizontal"
             labelCol={{ span: 4, offset: 2 }}
-            // initialValues={{
-            //   width: canvasModel.width,
-            //   height: canvasModel.height
-            // }}
+            initialValues={{
+              width: width,
+              height: height
+            }}
             onVisibleChange={onVisibleChange}
             wrapperCol={{ span: 15 }}
             width={400}
@@ -68,9 +81,9 @@ const CanvasPanel: FC<ICanvasPanelProps> = (props) => {
               onCancel: () => console.log('run'),
             }}
             onFinish={async (values) => {
-              changeCanvas(values);
-              // return Promise.resolve(true);
-              return true;
+              changeCanvasModel(values);
+              return Promise.resolve(true);
+              // return true;
             }}
           >
             <ProFormDigit
@@ -89,9 +102,9 @@ const CanvasPanel: FC<ICanvasPanelProps> = (props) => {
         </div>
 
         <div className={styles.content}>
-          <div>宽：{canvasModel.width}px</div>
+          <div>宽：{width}px</div>
 
-          <div>高：{canvasModel.height}px</div>
+          <div>高：{height}px</div>
         </div>
       </div>
 
@@ -108,8 +121,13 @@ const CanvasPanel: FC<ICanvasPanelProps> = (props) => {
             buttonStyle="solid"
           />
         </div>
-        <div>
-          <ColorSelect />
+
+        <div className={styles.container}>
+          {state.canvasOptionsValue === 'color' ? (
+            <ColorSelect value={selectNode?.color} onChange={colorChange} />
+          ) : (
+            <div>文件</div>
+          )}
         </div>
       </div>
     </div>

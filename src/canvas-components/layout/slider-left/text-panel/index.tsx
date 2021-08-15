@@ -1,12 +1,15 @@
 import React, { FC } from 'react';
 import { Button } from 'antd';
-import { useModel } from 'umi';
+import useModel from 'flooks';
+import canvasDataModel from '@/models1/canvasDataModel';
+import canvasModel from '@/models1/canvasModel';
+
 import styles from './textPanel.less';
 
 export interface ITextPanelProps {}
 
 const TextPanel: FC<ITextPanelProps> = (props) => {
-  const { addText } = useModel('useCanvasDataModel');
+  const { addText } = useModel(canvasDataModel);
 
   return (
     <div className={styles.panel}>

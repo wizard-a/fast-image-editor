@@ -1,21 +1,27 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import { useImmer } from 'use-immer';
 import { SketchPicker } from 'react-color';
-
+import { getRGBAValue } from '@/utils/util';
 import styles from './colorSelect.less';
 
-export interface IColorSelectProps {}
+export interface IColorSelectProps {
+  onChange: (value: string) => void;
+  value: string;
+}
 
 const ColorSelect: FC<IColorSelectProps> = (props) => {
   const [state, setState] = useImmer({
     displayColorPicker: false,
-    color: {
-      r: '241',
-      g: '112',
-      b: '19',
-      a: '1',
-    },
+    color: props.value,
   });
+
+  useEffect(() => {
+    if (props.value) {
+      setState((draft) => {
+        draft.color = props.value;
+      });
+    }
+  }, [props.value]);
   const handleClick = () => {
     setState((draft) => {
       draft.displayColorPicker = !draft.displayColorPicker;
@@ -30,11 +36,13 @@ const ColorSelect: FC<IColorSelectProps> = (props) => {
 
   const handleChange = (color: any) => {
     console.log('color=>', color);
+    const colorRgba = getRGBAValue(color.rgb);
     setState((draft) => {
-      draft.color = color.rgb;
+      draft.color = colorRgba;
     });
+    props.onChange(colorRgba);
   };
-  console.log('state=>', state);
+  // console.log('state=>', state);
 
   return (
     <div>
@@ -42,7 +50,7 @@ const ColorSelect: FC<IColorSelectProps> = (props) => {
         <div
           className={styles.color}
           style={{
-            background: `rgba(${state.color.r}, ${state.color.g}, ${state.color.b}, ${state.color.a})`,
+            background: state.color,
           }}
         />
       </div>

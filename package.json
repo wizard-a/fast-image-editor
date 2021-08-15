@@ -24,10 +24,13 @@
     "@ant-design/pro-layout": "^6.5.0",
     "@ant-design/pro-table": "^2.47.1",
     "@umijs/preset-react": "1.x",
+    "ahooks": "^2.10.9",
+    "flooks": "^4.0.2",
     "immer": "^9.0.5",
     "konva": "^8.1.1",
     "react-color": "^2.19.3",
     "react-konva": "^17.0.2-4",
+    "react-konva-utils": "^0.1.7",
     "umi": "^3.5.3",
     "use-image": "^1.0.7",
     "use-immer": "^0.6.0"

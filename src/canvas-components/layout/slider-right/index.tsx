@@ -1,18 +1,20 @@
 import React, { FC, useCallback } from 'react';
-import { useModel } from 'umi';
 import { CanvasPanel, TextPanel } from '../../shape-panel';
 import { ShapePanelEnum } from '@/enum';
+import useModel from 'flooks';
+import canvasDataModel from '@/models1/canvasDataModel';
+import canvasModel from '@/models1/canvasModel';
+import { getShapePanelTypeBySelectNode } from '@/utils/util';
 import styles from './slider.less';
 
 export interface IHeaderProps {}
 
 const Slider: FC<IHeaderProps> = (props) => {
-  const { canvas } = useModel('useCanvasModel', (model) => ({
-    canvas: model.canvas,
-  }));
+  const { selectNode } = useModel(canvasModel);
 
+  const shapePanelType = getShapePanelTypeBySelectNode(selectNode);
   const getPanelJsx = useCallback(() => {
-    switch (canvas.shapePanelType) {
+    switch (shapePanelType) {
       case ShapePanelEnum.ShapePanel:
         return <CanvasPanel />;
       case ShapePanelEnum.TextPanel:
@@ -20,7 +22,7 @@ const Slider: FC<IHeaderProps> = (props) => {
       default:
         break;
     }
-  }, [canvas.shapePanelType]);
+  }, [shapePanelType]);
 
   return <div className={styles.slider}>{getPanelJsx()}</div>;
 };
