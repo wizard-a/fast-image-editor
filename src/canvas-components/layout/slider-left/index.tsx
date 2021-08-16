@@ -1,7 +1,14 @@
 import React, { FC } from 'react';
 import classNames from 'classnames';
 import { Tooltip } from 'antd';
-import { BorderOuterOutlined } from '@ant-design/icons';
+import {
+  BorderOuterOutlined,
+  AppstoreAddOutlined,
+  LineHeightOutlined,
+  FileImageOutlined,
+  GatewayOutlined,
+  BarcodeOutlined,
+} from '@ant-design/icons';
 import { useImmer } from 'use-immer';
 import TextPanel from './text-panel';
 import ImagePanel from './image-panel';
@@ -11,28 +18,39 @@ import styles from './slider.less';
 const itemData = [
   {
     id: 'template',
-    name: '模板',
-    icon: <BorderOuterOutlined style={{ fontSize: 24, color: '#fff' }} />,
+    name: '模板1',
+    icon: <AppstoreAddOutlined style={{ fontSize: 24, color: '#fff' }} />,
+    activeIcon: (
+      <AppstoreAddOutlined style={{ fontSize: 24, color: '#10263A' }} />
+    ),
   },
   {
     id: 'text',
     name: '文字',
-    icon: <BorderOuterOutlined style={{ fontSize: 24, color: '#fff' }} />,
+    icon: <LineHeightOutlined style={{ fontSize: 24, color: '#fff' }} />,
+    activeIcon: (
+      <LineHeightOutlined style={{ fontSize: 24, color: '#10263A' }} />
+    ),
   },
   {
     id: 'image',
     name: '图片',
-    icon: <BorderOuterOutlined style={{ fontSize: 24, color: '#fff' }} />,
+    icon: <FileImageOutlined style={{ fontSize: 24, color: '#fff' }} />,
+    activeIcon: (
+      <FileImageOutlined style={{ fontSize: 24, color: '#10263A' }} />
+    ),
   },
   {
     id: 'label',
     name: '标记',
-    icon: <BorderOuterOutlined style={{ fontSize: 24, color: '#fff' }} />,
+    icon: <GatewayOutlined style={{ fontSize: 24, color: '#fff' }} />,
+    activeIcon: <GatewayOutlined style={{ fontSize: 24, color: '#10263A' }} />,
   },
   {
     id: 'background',
     name: '背景',
-    icon: <BorderOuterOutlined style={{ fontSize: 24, color: '#fff' }} />,
+    icon: <BarcodeOutlined style={{ fontSize: 24, color: '#fff' }} />,
+    activeIcon: <BarcodeOutlined style={{ fontSize: 24, color: '#10263A' }} />,
   },
 ];
 
@@ -59,7 +77,8 @@ const Slider: FC<IHeaderProps> = (props) => {
                   state.active === item.id ? styles.active : ''
                 }`}
               >
-                <BorderOuterOutlined
+                {state.active === item.id ? item.icon : item.activeIcon}
+                {/* <BorderOuterOutlined
                   style={{
                     fontSize: 24,
                     color:
@@ -67,7 +86,7 @@ const Slider: FC<IHeaderProps> = (props) => {
                         ? '#fff'
                         : 'rgba(16, 38, 58, 0.65)',
                   }}
-                />
+                /> */}
               </div>
             </Tooltip>
           );

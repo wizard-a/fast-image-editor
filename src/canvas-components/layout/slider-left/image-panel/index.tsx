@@ -20,6 +20,8 @@ const image1 = [
   '/image1/11.jpg',
   '/image1/12.jpg',
   '/image1/13.jpg',
+  '/image1/14.png',
+  '/image1/15.jpeg',
 ];
 const image2 = [
   '/image2/1.jpg',
@@ -34,6 +36,9 @@ const image2 = [
   '/image2/10.jpg',
   '/image2/11.jpg',
   '/image2/12.jpg',
+  ,
+  '/image2/13.jpeg',
+  '/image2/14.jpeg',
 ];
 
 export interface IPanelPanelProps {}

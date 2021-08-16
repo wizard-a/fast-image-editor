@@ -3,6 +3,15 @@ import { Button } from 'antd';
 import useModel from 'flooks';
 import canvasDataModel from '@/models1/canvasDataModel';
 import canvasModel from '@/models1/canvasModel';
+import {
+  BorderOuterOutlined,
+  AppstoreAddOutlined,
+  LineHeightOutlined,
+  FileImageOutlined,
+  GatewayOutlined,
+  ZoomInOutlined,
+  ZoomOutOutlined,
+} from '@ant-design/icons';
 import { useImmer } from 'use-immer';
 import { getScalePercent } from '@/utils/util';
 import styles from './toolbar.less';
@@ -40,9 +49,15 @@ const Toolbar: FC<IToolbarProps> = (props) => {
 
   return (
     <div className={styles.toolbar}>
-      <Button onClick={() => zoom('zoomIn')}>放大</Button>
-      <span>{getScalePercent(stageData.scale)}</span>
-      <Button onClick={() => zoom('zoomOut')}>缩小</Button>
+      <ZoomInOutlined
+        style={{ color: 'rgba(16, 38, 58, 0.65)', fontSize: 20 }}
+        onClick={() => zoom('zoomIn')}
+      />
+      <span className={styles.text}>{getScalePercent(stageData.scale)}</span>
+      <ZoomOutOutlined
+        style={{ color: 'rgba(16, 38, 58, 0.65)', fontSize: 20 }}
+        onClick={() => zoom('zoomOut')}
+      />
     </div>
   );
 };

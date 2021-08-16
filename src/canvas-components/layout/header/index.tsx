@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Button } from 'antd';
+import { Button, message } from 'antd';
 import useModel from 'flooks';
 import canvasModel from '@/models1/canvasModel';
 import canvasDataModel from '@/models1/canvasDataModel';
@@ -10,11 +10,17 @@ export interface IHeaderProps {}
 
 const Header: FC<IHeaderProps> = (props) => {
   const { stageRef } = useModel(canvasModel);
+  const { nodes } = useModel(canvasDataModel);
 
   const download = () => {
-    var dataURL = stageRef.current.toDataURL({ pixelRatio: 2 });
+    var dataURL = stageRef.current.toDataURL({ pixelRatio: 0.5 });
     console.log('dataURL', dataURL);
     downloadURI(dataURL, '画布图像.png');
+  };
+
+  const getTemplate = () => {
+    console.log('节点内容=>', JSON.stringify(nodes));
+    message.success('请在控制台查看JSON');
   };
   return (
     <div className={styles.header}>
@@ -22,6 +28,13 @@ const Header: FC<IHeaderProps> = (props) => {
       <div className={styles.right}>
         <Button type="primary" onClick={download}>
           下载
+        </Button>
+        <Button
+          style={{ marginLeft: '10px' }}
+          type="primary"
+          onClick={getTemplate}
+        >
+          获取模板内容
         </Button>
       </div>
     </div>

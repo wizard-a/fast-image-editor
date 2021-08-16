@@ -27,16 +27,28 @@ export interface ITextInputProps {
 const TextInput: FC<ITextInputProps> = forwardRef((props, ref: any) => {
   // console.log('props=>', props, ref);
 
-  const { width, height, text, fontSize, fill, onDoubleClick, ...otherProps } =
-    props;
-  const { editNode, shapePanelType, changeCanvas, stageRef } =
-    useModel(canvasModel);
+  const {
+    width,
+    height,
+    text,
+    fontSize,
+    fontStyle,
+    fontWeight,
+    fill,
+    onDoubleClick,
+    ...otherProps
+  } = props;
+  const {
+    editNode,
+    shapePanelType,
+    changeCanvas,
+    stageRef,
+    stageData,
+    selectNode,
+  } = useModel(canvasModel);
   const { changeCanvasModelDataItem } = useModel(canvasDataModel);
 
-  const inputRef = useRef<HTMLInputElement>();
-  const [state, setState] = useImmer({
-    isEdit: false,
-  });
+  // const {} =
 
   const onDblClick = (e: any) => {
     e.cancelBubble = true;
@@ -58,21 +70,32 @@ const TextInput: FC<ITextInputProps> = forwardRef((props, ref: any) => {
 
     // create textarea and style it
     var textarea = document.createElement('textarea');
-    document.body.appendChild(textarea);
+    var div = document.createElement('div');
+    div.appendChild(textarea);
+    document.body.appendChild(div);
 
+    div.style.width = textNode.width() - textNode.padding() * 2 + 'px';
+    div.style.height = textNode.height() - textNode.padding() * 2 + 2 + 'px';
     // apply many styles to match text on canvas as close as possible
     // remember that text rendering on canvas and on the textarea can be different
     // and sometimes it is hard to make it 100% the same. But we will try...
     textarea.value = textNode.text();
-    textarea.style.position = 'absolute';
-    textarea.style.top = areaPosition.y + 'px';
-    textarea.style.left = areaPosition.x + 'px';
-    textarea.style.width = textNode.width() - textNode.padding() * 2 + 'px';
-    textarea.style.height =
-      textNode.height() - textNode.padding() * 2 + 5 + 'px';
+    div.style.position = 'absolute';
+    div.style.top = areaPosition.y + 'px';
+    div.style.left = areaPosition.x + 'px';
+    // div.style.border = '1px solid #1890ff';
+    textarea.style.boxSizing = 'content-box';
+
+    // textarea.style.width = textNode.width() - textNode.padding() * 2 + 'px';
+    // textarea.style.height =
+    //   textNode.height() - textNode.padding() * 2 + 5 + 'px';
+    textarea.style.width = '100%';
+    textarea.style.height = '100%';
+
     textarea.style.fontSize = textNode.fontSize() + 'px';
-    // textarea.style.border = '2px solid blue';
+    // textarea.style.border = '1px solid blue';
     textarea.style.border = 'none';
+    textarea.style.border = '1px solid #1890ff';
     textarea.style.padding = '0px';
     textarea.style.margin = '0px';
     textarea.style.overflow = 'hidden';
@@ -81,20 +104,20 @@ const TextInput: FC<ITextInputProps> = forwardRef((props, ref: any) => {
     textarea.style.resize = 'none';
     textarea.style.lineHeight = textNode.lineHeight();
     textarea.style.fontFamily = textNode.fontFamily();
+    textarea.style.fontWeight = selectNode.fontWeight;
+    textarea.style.fontStyle = selectNode.fontStyle;
     textarea.style.transformOrigin = 'left top';
     textarea.style.textAlign = textNode.align();
     textarea.style.color = textNode.fill();
     textarea.style.boxSizing = 'content-box';
     textarea.style.wordBreak = 'break-all';
     const rotation = textNode.rotation();
-    var transform = '';
+    var transform = `scale(${stageData.scale})`;
     if (rotation) {
-      transform += 'rotateZ(' + rotation + 'deg)';
+      transform += ' rotateZ(' + rotation + 'deg)';
     }
 
     var px = 0;
-    // also we need to slightly move textarea on firefox
-    // because it jumps a bit
     var isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
     if (isFirefox) {
       px += 2 + Math.round(textNode.fontSize() / 20);
@@ -103,15 +126,12 @@ const TextInput: FC<ITextInputProps> = forwardRef((props, ref: any) => {
 
     textarea.style.transform = transform;
 
-    // reset height
-    textarea.style.height = 'auto';
-    // after browsers resized it we can set actual value
-    textarea.style.height = textarea.scrollHeight + 'px';
-
     textarea.focus();
 
     function removeTextarea() {
-      textarea.parentNode.removeChild(textarea);
+      // textarea.parentNode.removeChild(div);
+      document.body.removeChild(div);
+
       window.removeEventListener('click', handleOutsideClick);
       textNode.show();
       // tr.show();
@@ -138,24 +158,36 @@ const TextInput: FC<ITextInputProps> = forwardRef((props, ref: any) => {
       textarea.style.width = newWidth + 'px';
     }
 
-    textarea.addEventListener('keydown', function (e) {
-      // hide on enter
-      // but don't hide on shift + enter
-      if (e.keyCode === 13 && !e.shiftKey) {
-        textNode.text(textarea.value);
-        removeTextarea();
-      }
-      // on esc do not set value back to node
-      if (e.keyCode === 27) {
-        removeTextarea();
-      }
-    });
+    // textarea.addEventListener('keydown', function (e) {
+    //   // hide on enter
+    //   // but don't hide on shift + enter
+    //   if (e.keyCode === 13 && !e.shiftKey) {
+    //     textNode.text(textarea.value);
+    //     removeTextarea();
+    //   }
+    //   // on esc do not set value back to node
+    //   if (e.keyCode === 27) {
+    //     removeTextarea();
+    //   }
+    // });
 
     textarea.addEventListener('keydown', function (e) {
-      var scale = textNode.getAbsoluteScale().x;
-      setTextareaWidth(textNode.width() * scale);
-      textarea.style.height = 'auto';
-      textarea.style.height = textarea.scrollHeight + 3 + 'px';
+      // var scale = textNode.getAbsoluteScale().x;
+      setTextareaWidth(textNode.width());
+      setTimeout(() => {
+        div.style.height = textarea.scrollHeight + 'px';
+        changeCanvasModelDataItem({
+          ...props,
+          text: textarea.value,
+          width: textNode.width(),
+          height: textarea.scrollHeight,
+        });
+
+        // textNode.width(textarea.scrollHeight)
+      }, 0);
+
+      // textarea.style.height = 'auto';
+      // textarea.style.height = textarea.scrollHeight + fontSize + 'px';
     });
 
     function handleOutsideClick(e) {
@@ -169,119 +201,24 @@ const TextInput: FC<ITextInputProps> = forwardRef((props, ref: any) => {
     });
   };
 
-  const handleChange = (e: any) => {
-    const value = e.target.value;
-    // debugger;
-    console.log(
-      'inputRef.current?.offsetWidth',
-      inputRef.current?.scrollWidth,
-      inputRef.current?.offsetWidth,
-      inputRef.current?.clientWidth,
-    );
-    // const width = inputRef.current?.offsetWidth + (value.length - text.length) * fontSize;
-    // debugger;
-    // console.log('width', width);
-    changeCanvasModelDataItem({
-      ...props,
-      text: value,
-      // width: inputRef.current?.scrollWidth,
-      // height: inputRef.current?.scrollHeight
-    });
-  };
-
-  const onInput = (e: any) => {
-    console.log('value', e.target.value);
-    inputRef.current.parentNode.dataset.replicatedValue = e.target.value;
-  };
-
-  const isEdit = editNode?.id === props.id;
-
-  // console.log('!state.isEdit', !state.isEdit)
-  // console.log('width', width);
-
+  // console.log('fontStyle=>', fontStyle, fontWeight, props)
+  const currFontStyle = `${fontStyle ? fontStyle + ' ' : ''}${
+    fontWeight === 'bold' ? 'bold' : 'normal'
+  }`;
+  // console.log('currFontStyle', currFontStyle)
   return (
     <Text
       ref={ref}
       onDblClick={onDblClick}
       {...props}
+      fontStyle={currFontStyle}
+      // fontStyle={`${fontStyle} ${fontWeight === 'bold' ? 'bold' : 'normal'}`}
       width={width}
       height={height}
       text={text}
       fontSize={fontSize}
       lineHeight={1}
     />
-  );
-  return (
-    <Group {...props} ref={ref} onDblClick={onDblClick}>
-      {!isEdit ? (
-        <Text
-          width={width}
-          height={height}
-          text={text}
-          fontSize={fontSize}
-          lineHeight={1}
-          align="center"
-          verticalAlign="bottom"
-          // verticalAlign='center' align='center'
-        />
-      ) : (
-        <React.Fragment>
-          <Rect width={width} height={height} />
-          <Html
-            transform // should we apply position transform automatically to DOM container, default is true
-            groupProps={{ width, height }} // additional properties to the group wrapper, useful for some position offset
-            divProps={{
-              style: { width: `${width}px`, height: `${height}px` },
-              // background: '#ccc',
-            }} // additional props for wrapped div elements, useful for styles
-          >
-            {/* <div>
-            <div
-              // style={{ width: `${width}px`, height: `${height}px`}}
-              className={'grow-wrap'}>
-              <textarea
-                onInput={onInput}
-                ref={inputRef}
-                // value={text}
-                // rows={1}
-                // cols={width}
-                // onChange={handleChange}
-                // style={{color:fill}}
-                // style={{ fontSize, color: fill, padding: 0, border: 'none', outline: 'none', resize: 'none', lineHeight: `${fontSize}px` }}
-                >
-
-              </textarea>
-            </div>
-
-          </div> */}
-
-            <textarea
-              // onClick={handelClick}
-              ref={inputRef}
-              value={text}
-              rows={1}
-              cols={width}
-              onChange={handleChange}
-              style={{
-                width,
-                height,
-                fontSize,
-                color: fill,
-                padding: 0,
-                border: 'none',
-                outline: 'none',
-                resize: 'none',
-                lineHeight: `${fontSize}px`,
-                overflowWrap: 'normal',
-                overflow: 'hidden',
-                wordBreak: 'break-all',
-              }}
-              placeholder="DOM input from Konva nodes"
-            />
-          </Html>
-        </React.Fragment>
-      )}
-    </Group>
   );
 });
 

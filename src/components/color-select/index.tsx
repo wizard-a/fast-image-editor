@@ -45,7 +45,7 @@ const ColorSelect: FC<IColorSelectProps> = (props) => {
   // console.log('state=>', state);
 
   return (
-    <div>
+    <React.Fragment>
       <div className={styles.swatch} onClick={handleClick}>
         <div
           className={styles.color}
@@ -60,7 +60,7 @@ const ColorSelect: FC<IColorSelectProps> = (props) => {
           <SketchPicker color={state.color} onChange={handleChange} />
         </div>
       ) : null}
-    </div>
+    </React.Fragment>
   );
 };
 

@@ -100,7 +100,7 @@ const TransformerWrapper = (Component: FC<BaseProps>) => {
       const currItem: any = {
         ...props,
         width: node.width() * scaleX,
-        // height: node.height() * scaleY,
+        height: node.height() * scaleY,
         scaleX: 1,
       };
       changeCanvasModelDataItem(currItem as DatModelItem);
@@ -127,6 +127,8 @@ const TransformerWrapper = (Component: FC<BaseProps>) => {
             const node = shapeRef.current;
             const scaleX = node.scaleX();
             const scaleY = node.scaleY();
+            // console.log()
+            // debugger;
             // we will reset it back
             node.scaleX(1);
             node.scaleY(1);
@@ -138,6 +140,9 @@ const TransformerWrapper = (Component: FC<BaseProps>) => {
               scaleX: 1,
               width: Math.max(5, node.width() * scaleX),
               height: Math.max(node.height() * scaleY),
+              rotation: node.rotation(),
+              skewX: node.skewX(),
+              skewY: node.skewY(),
             };
             if (props.fontSize) {
               currItem.fontSize = props.fontSize * scaleY;

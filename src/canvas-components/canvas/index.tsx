@@ -14,6 +14,7 @@ import useModel from 'flooks';
 import canvasDataModel from '@/models1/canvasDataModel';
 import canvasModel from '@/models1/canvasModel';
 import { useClickAway, useSize } from 'ahooks';
+import { Spin } from 'antd';
 import type { DatModelItem, BgModel, TextModel } from '@/typing';
 import styles from './canvas.less';
 
@@ -27,7 +28,8 @@ const TransformerImage = TransformerWrapper(Image);
 const Canvas: FC<ICanvasProps> = (props) => {
   // const { stageRef, stageData, changeCanvas } = useModel(canvasModel);
   const { width, height, nodes } = useModel(canvasDataModel);
-  const { changeCanvas, selectNode, stageData } = useModel(canvasModel);
+  const { changeCanvas, selectNode, stageData, loading } =
+    useModel(canvasModel);
   const ref = useRef<HTMLDivElement>(null);
   const stageRef = useRef<Konva.Stage>(null);
   const layerRef = useRef<Konva.Layer>(null);
@@ -46,16 +48,20 @@ const Canvas: FC<ICanvasProps> = (props) => {
     //   //   // scale: Math.min(scaleX, scaleY),
     //   // }
     // });
-    if (ref.current) {
+    // console.log('ref?.current', ref?.current, loading)
+    if (ref.current && !loading) {
       const scaleX = (ref.current.offsetHeight - 120) / stageData.height;
       const scaleY = (ref.current.offsetWidth - 120) / stageData.width;
       let scale = Math.min(scaleX, scaleY);
       if (scale > 1) scale = 1;
+      // console.log('nodes=>', nodes[0])
       changeCanvas({
         stageRef,
         layerRef,
         bgRef: bgRef,
         canvasRef: ref,
+        selectNode: nodes[0],
+        editNode: null,
         stageData: {
           ...stageData,
           width: width * scale,
@@ -63,6 +69,9 @@ const Canvas: FC<ICanvasProps> = (props) => {
           scale,
         },
       });
+      setTimeout(() => {
+        changeCanvasPanel();
+      }, 0);
     }
   }, []);
 
@@ -156,22 +165,28 @@ const Canvas: FC<ICanvasProps> = (props) => {
   //
   // console.log('ref.current.scrollHeight', stageData.height, height, 835, 955, style)
   return (
-    <div className={styles.canvas} ref={ref}>
-      <ContextMenu />
-      <Toolbar />
-      <div style={style}>
-        <Stage
-          width={stageData.width}
-          height={stageData.height}
-          scaleX={stageData.scale}
-          scaleY={stageData.scale}
-          ref={stageRef}
-          onClick={onStageClick}
-        >
-          <Layer ref={layerRef}>{content}</Layer>
-        </Stage>
+    <React.Fragment>
+      {!loading && <ContextMenu />}
+      <div className={styles.canvas} ref={ref}>
+        <Toolbar />
+        {loading ? (
+          <Spin />
+        ) : (
+          <div style={style}>
+            <Stage
+              width={stageData.width}
+              height={stageData.height}
+              scaleX={stageData.scale}
+              scaleY={stageData.scale}
+              ref={stageRef}
+              onClick={onStageClick}
+            >
+              <Layer ref={layerRef}>{content}</Layer>
+            </Stage>
+          </div>
+        )}
       </div>
-    </div>
+    </React.Fragment>
   );
 };
 

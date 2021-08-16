@@ -12,7 +12,15 @@ const ContextMenu: FC<IContextMenuProps> = ({}) => {
   const ref = useRef<HTMLDivElement>(null);
   const currTargetRef = useRef<Konva.Shape | Konva.Stage>();
 
-  const { stageRef, layerRef, bgRef, stageData } = useModel(canvasModel);
+  const {
+    stageRef,
+    layerRef,
+    bgRef,
+    stageData,
+    loading,
+    canvasRef,
+    selectNode,
+  } = useModel(canvasModel);
   const { width, height, removeNode, copyNode } = useModel(canvasDataModel);
 
   useEffect(() => {
@@ -24,10 +32,11 @@ const ContextMenu: FC<IContextMenuProps> = ({}) => {
   }, []);
 
   useEffect(() => {
+    // console.log('stageRef?.current', stageRef?.current, loading)
     if (stageRef?.current) {
       stageRef.current.on(
         'contextmenu',
-        function (e: Konva.KonvaEventObject<Event>) {
+        function (e: Konva.KonvaEventObject<any>) {
           e.evt.preventDefault();
           if (e.target === stageRef.current || !ref.current) {
             return;
@@ -39,18 +48,22 @@ const ContextMenu: FC<IContextMenuProps> = ({}) => {
           var containerRect = stageRef.current
             .container()
             .getBoundingClientRect();
+
+          // console.log('containerRect=>', containerRect, stageRef.current.getPointerPosition());
+          menuNode.style.top = `${e?.evt?.clientY + 1}px`;
+          menuNode.style.left = `${e?.evt?.clientX + 1}px`;
           // menuNode.style.top =  e.evt.clientX + 'px';
           // menuNode.style.left = e.evt.clientY + 'px';
-          menuNode.style.top =
-            containerRect.top +
-            stageRef.current.getPointerPosition().y +
-            4 +
-            'px';
-          menuNode.style.left =
-            containerRect.left +
-            stageRef.current.getPointerPosition().x +
-            4 +
-            'px';
+          // menuNode.style.top =
+          //   containerRect.top +
+          //   stageRef.current.getPointerPosition().y +
+          //   4 +
+          //   'px';
+          // menuNode.style.left =
+          //   containerRect.left +
+          //   stageRef.current.getPointerPosition().x +
+          //   4 +
+          //   'px';
         },
       );
     }
@@ -75,7 +88,7 @@ const ContextMenu: FC<IContextMenuProps> = ({}) => {
   };
 
   const copy = () => {
-    copyNode(currTargetRef.current?.attrs);
+    copyNode(JSON.parse(JSON.stringify(selectNode)));
   };
 
   const del = () => {

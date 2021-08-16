@@ -1,5 +1,5 @@
 import React, { FC, useCallback } from 'react';
-import { CanvasPanel, TextPanel } from '../../shape-panel';
+import { CanvasPanel, TextPanel, ImagePanel } from '../../shape-panel';
 import { ShapePanelEnum } from '@/enum';
 import useModel from 'flooks';
 import canvasDataModel from '@/models1/canvasDataModel';
@@ -19,6 +19,8 @@ const Slider: FC<IHeaderProps> = (props) => {
         return <CanvasPanel />;
       case ShapePanelEnum.TextPanel:
         return <TextPanel />;
+      case ShapePanelEnum.ImagePanel:
+        return <ImagePanel />;
       default:
         break;
     }

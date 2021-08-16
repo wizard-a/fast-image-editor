@@ -19,7 +19,7 @@ const initData: DataModel = [
   {
     id: 'bg',
     type: 'color',
-    color: 'rgba(142, 127, 214, 1)',
+    color: '#008CE5',
   },
   //  {
   //    id: '1',
@@ -38,23 +38,23 @@ const initData: DataModel = [
   //    fill: '#000',
   //  },
   {
-    x: 150,
-    y: 150,
-    id: '5',
+    draggable: true,
+    x: 422.35063663075414,
+    y: 291.7723796804092,
+    id: '28608db7-7f68-4fb4-bfc9-54522364c617',
+    fontSize: 60,
     type: 'text-input',
     text: '双击编辑文字',
-    fontSize: 50,
     fill: '#000',
-    width: 300,
-    //  height:50
+    width: 360,
   },
-  {
-    x: 200,
-    y: 200,
-    id: '6',
-    type: 'image',
-    url: 'https://konvajs.org/assets/darth-vader.jpg',
-  },
+  // {
+  //   x: 200,
+  //   y: 200,
+  //   id: '6',
+  //   type: 'image',
+  //   url: 'https://konvajs.org/assets/darth-vader.jpg',
+  // },
 ];
 
 const canvasDataModel = ({ get, set }: any) => ({
@@ -66,11 +66,15 @@ const canvasDataModel = ({ get, set }: any) => ({
   },
   changeCanvasModelDataItem: (currDataModelItem: DatModelItem) => {
     // console.log('currDataModelItem=>', currDataModelItem);
-
+    const { changeCanvas } = get(canvasModel);
+    changeCanvas({
+      selectNode: currDataModelItem,
+    });
     set((state: any) => {
       let index = state.nodes.findIndex(
         (item: DatModelItem) => item.id === currDataModelItem.id,
       );
+
       state.nodes[index] = currDataModelItem;
       return {
         nodes: [...state.nodes],
@@ -144,6 +148,17 @@ const canvasDataModel = ({ get, set }: any) => ({
     });
     changeCanvas({
       selectNode: item,
+    });
+  },
+  setTemplate: (data: any) => {
+    const { setTemplate } = get(canvasModel);
+    set((state: any) => {
+      setTemplate(data);
+      return {
+        width: data.width,
+        height: data.height,
+        nodes: data.nodes,
+      };
     });
   },
 });

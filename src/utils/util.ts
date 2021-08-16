@@ -26,6 +26,9 @@ export const getShapePanelTypeBySelectNode = (selectNode: DatModelItem) => {
   if (selectNode.type === 'text-input' || selectNode.type === 'text') {
     return ShapePanelEnum.TextPanel;
   }
+  if (selectNode.type === 'image') {
+    return ShapePanelEnum.ImagePanel;
+  }
   return ShapePanelEnum.ShapePanel;
 };
 

@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import PanelTitle from '../panel-title';
-import { Form, Radio } from 'antd';
+import { Form, Radio, Button } from 'antd';
 import ProForm, {
   ModalForm,
   ProFormText,
@@ -54,7 +54,7 @@ const CanvasPanel: FC<ICanvasPanelProps> = (props) => {
     });
   };
 
-  // console.log('selectNode?.color=>', selectNode?.color)
+  console.log('selectNode?.color=>', selectNode?.color, selectNode);
   return (
     <div className={styles.canvasPanel}>
       <PanelTitle>画布</PanelTitle>
@@ -101,7 +101,11 @@ const CanvasPanel: FC<ICanvasPanelProps> = (props) => {
           </ModalForm> */}
         </div>
 
-        <div className={styles.content}>
+        {/* <div className={styles.content}> */}
+        <div
+          className={styles.content}
+          style={{ background: 'rgba(16, 38, 58, 0.04)', padding: '10px' }}
+        >
           <div>宽：{width}px</div>
 
           <div>高：{height}px</div>
@@ -112,22 +116,28 @@ const CanvasPanel: FC<ICanvasPanelProps> = (props) => {
         <div className={styles.title}>
           <div>画布背景</div>
         </div>
-        <div>
-          <Radio.Group
-            options={canvasOptions}
-            onChange={onChange}
-            value={state.canvasOptionsValue}
-            optionType="button"
-            buttonStyle="solid"
-          />
-        </div>
 
-        <div className={styles.container}>
-          {state.canvasOptionsValue === 'color' ? (
-            <ColorSelect value={selectNode?.color} onChange={colorChange} />
-          ) : (
-            <div>文件</div>
-          )}
+        <div
+          className={styles.content}
+          style={{ background: 'rgba(16, 38, 58, 0.04)', padding: '10px' }}
+        >
+          <div style={{ width: '100%' }}>
+            <Radio.Group
+              style={{ marginBottom: '10px' }}
+              options={canvasOptions}
+              onChange={onChange}
+              value={state.canvasOptionsValue}
+              optionType="button"
+              buttonStyle="solid"
+            />
+            {state.canvasOptionsValue === 'color' ? (
+              <ColorSelect value={selectNode?.color} onChange={colorChange} />
+            ) : (
+              <Button style={{ width: '100%' }} type="primary">
+                更换图片
+              </Button>
+            )}
+          </div>
         </div>
       </div>
     </div>
