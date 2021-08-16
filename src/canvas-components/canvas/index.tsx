@@ -112,6 +112,16 @@ const Canvas: FC<ICanvasProps> = (props) => {
             shadowBlur={10}
           />
         );
+      case 'bg-image':
+        return (
+          <Image
+            ref={bgRef}
+            key={item.id}
+            {...item}
+            width={width}
+            height={height}
+          />
+        );
       case 'text':
         const textModel = item as TextModel;
         // console.log('textModel', textModel)
@@ -121,7 +131,12 @@ const Canvas: FC<ICanvasProps> = (props) => {
         const textInputModel = item as TextModel;
         // console.log('textInputModel', textInputModel)
         return (
-          <TransformerTextInput key={item.id} draggable {...textInputModel} />
+          <TransformerTextInput
+            changeCanvasPanel={changeCanvasPanel}
+            key={item.id}
+            draggable
+            {...textInputModel}
+          />
         );
 
       case 'image':
@@ -147,7 +162,7 @@ const Canvas: FC<ICanvasProps> = (props) => {
   };
 
   const content = getJsx();
-  // console.log('content=>', content);
+  console.log('content=>', content);
   const top =
     ref.current && stageData.height - (ref.current.clientHeight - 120) > 0
       ? stageData.height - (ref.current.clientHeight - 120)

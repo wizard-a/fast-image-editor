@@ -19,7 +19,7 @@ const initData: DataModel = [
   {
     id: 'bg',
     type: 'color',
-    color: '#008CE5',
+    color: '#ccc',
   },
   //  {
   //    id: '1',

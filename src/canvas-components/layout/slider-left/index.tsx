@@ -13,6 +13,7 @@ import { useImmer } from 'use-immer';
 import TextPanel from './text-panel';
 import ImagePanel from './image-panel';
 import TemplatePanel from './template-panel';
+import BGPanel from './bg-panel';
 import styles from './slider.less';
 
 const itemData = [
@@ -96,6 +97,7 @@ const Slider: FC<IHeaderProps> = (props) => {
         {state.active === 'template' && <TemplatePanel />}
         {state.active === 'text' && <TextPanel />}
         {state.active === 'image' && <ImagePanel />}
+        {state.active === 'background' && <BGPanel />}
       </div>
     </div>
   );

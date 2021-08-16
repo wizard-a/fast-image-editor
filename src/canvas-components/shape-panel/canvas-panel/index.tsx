@@ -54,7 +54,7 @@ const CanvasPanel: FC<ICanvasPanelProps> = (props) => {
     });
   };
 
-  console.log('selectNode?.color=>', selectNode?.color, selectNode);
+  // console.log('selectNode?.color=>', selectNode?.color, selectNode);
   return (
     <div className={styles.canvasPanel}>
       <PanelTitle>画布</PanelTitle>

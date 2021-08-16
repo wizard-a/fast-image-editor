@@ -36,6 +36,7 @@ const TextInput: FC<ITextInputProps> = forwardRef((props, ref: any) => {
     fontWeight,
     fill,
     onDoubleClick,
+    changeCanvasPanel,
     ...otherProps
   } = props;
   const {
@@ -180,7 +181,7 @@ const TextInput: FC<ITextInputProps> = forwardRef((props, ref: any) => {
           ...props,
           text: textarea.value,
           width: textNode.width(),
-          height: textarea.scrollHeight,
+          // height: textarea.scrollHeight,
         });
 
         // textNode.width(textarea.scrollHeight)
@@ -192,6 +193,7 @@ const TextInput: FC<ITextInputProps> = forwardRef((props, ref: any) => {
 
     function handleOutsideClick(e) {
       if (e.target !== textarea) {
+        changeCanvasPanel();
         textNode.text(textarea.value);
         removeTextarea();
       }
@@ -205,7 +207,7 @@ const TextInput: FC<ITextInputProps> = forwardRef((props, ref: any) => {
   const currFontStyle = `${fontStyle ? fontStyle + ' ' : ''}${
     fontWeight === 'bold' ? 'bold' : 'normal'
   }`;
-  // console.log('currFontStyle', currFontStyle)
+  // console.log('props=>', props)
   return (
     <Text
       ref={ref}

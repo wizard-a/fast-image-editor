@@ -84,9 +84,19 @@ const TransformerWrapper = (Component: FC<BaseProps>) => {
         //只有text-input处理
         return;
       }
+
       const node = shapeRef.current;
+      // console.log('onTransform=>', node)
       const scaleX = node.scaleX();
       const scaleY = node.scaleY();
+
+      // const currItem: any = {
+      //   ...props,
+      //   width: node.width() * scaleX,
+      //   height: node.height() * scaleY,
+      //   scaleX: 1,
+      // };
+      // changeCanvasModelDataItem(currItem as DatModelItem);
 
       if (
         !isEqual(scaleX, currScale.current.scaleX) &&
@@ -97,13 +107,20 @@ const TransformerWrapper = (Component: FC<BaseProps>) => {
         // console.log('===============>',scaleX, scaleY, isEqual(scaleX, currScale.current.scaleX), isEqual(scaleY, currScale.current.scaleY))
         return;
       }
-      const currItem: any = {
-        ...props,
-        width: node.width() * scaleX,
-        height: node.height() * scaleY,
+      // const currItem: any = {
+      //   ...props,
+      //   width: node.width() * scaleX,
+      //   // height: node.height() * scaleY,
+      //   scaleX: 1,
+      // };
+
+      const textNode = shapeRef.current;
+
+      textNode.setAttrs({
+        width: textNode.width() * textNode.scaleX(),
         scaleX: 1,
-      };
-      changeCanvasModelDataItem(currItem as DatModelItem);
+      });
+      // changeCanvasModelDataItem(currItem as DatModelItem);
     };
 
     return (
@@ -139,7 +156,7 @@ const TransformerWrapper = (Component: FC<BaseProps>) => {
               y: node.y(),
               scaleX: 1,
               width: Math.max(5, node.width() * scaleX),
-              height: Math.max(node.height() * scaleY),
+              // height: Math.max(node.height() * scaleY),
               rotation: node.rotation(),
               skewX: node.skewX(),
               skewY: node.skewY(),

@@ -44,7 +44,7 @@ const TextPanel: FC<ITextPanelProps> = (props) => {
     useModel(canvasDataModel);
   const { selectNode, changeCanvas } = useModel(canvasModel);
 
-  console.log('selectNode=>', selectNode);
+  // console.log('selectNode=>', selectNode);
 
   const changeFont = (key: string, value: string) => {
     changeCanvasModelDataItem({
@@ -64,7 +64,7 @@ const TextPanel: FC<ITextPanelProps> = (props) => {
 
   return (
     <div className={styles.textPanel}>
-      <PanelTitle>画布</PanelTitle>
+      <PanelTitle>文字</PanelTitle>
       <div className={styles.item}>
         <div className={styles.title}>
           <div>字体</div>

@@ -15,7 +15,7 @@ const TextPanel: FC<ITextPanelProps> = (props) => {
 
   return (
     <div className={styles.textPanel}>
-      <PanelTitle>画布</PanelTitle>
+      <PanelTitle>图片</PanelTitle>
       <div className={styles.item}>
         <div className={styles.title}>
           <div>背景</div>
