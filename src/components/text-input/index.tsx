@@ -213,7 +213,7 @@ const TextInput: FC<ITextInputProps> = forwardRef((props, ref: any) => {
       ref={ref}
       onDblClick={onDblClick}
       {...props}
-      fontStyle={currFontStyle}
+      // fontStyle={currFontStyle}
       // fontStyle={`${fontStyle} ${fontWeight === 'bold' ? 'bold' : 'normal'}`}
       width={width}
       height={height}

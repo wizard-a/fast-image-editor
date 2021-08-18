@@ -45,3 +45,26 @@ export type DatModelItem = BgModel | TextModel | ReactModel;
 export type DataModel = Array<DatModelItem>;
 
 export type ShapePanelType = 'canvas' | 'text';
+
+// 节点位置信息
+export type LocationItem = {
+  id: string;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  l: number; // 左侧对齐线
+  r: number; // 右侧对齐线
+  t: number; // 顶部对齐线
+  b: number; // 底部对齐线
+  lc: number; // 左侧居中对齐线
+  tc: number; // 顶部居中弄对齐线
+};
+
+// 线信息
+export type LineItem = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+};

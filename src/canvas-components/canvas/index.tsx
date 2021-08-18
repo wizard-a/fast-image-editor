@@ -36,7 +36,8 @@ const Canvas: FC<ICanvasProps> = (props) => {
   const bgRef = useRef<Konva.Rect>(null);
   const size = useSize(ref);
 
-  window.stageRef = stageRef;
+  // window.stageRef = stageRef;
+  // window.layerRef = layerRef;
   useEffect(() => {
     // changeCanvas({
     //   stageRef,

@@ -8,14 +8,22 @@ import React, {
 } from 'react';
 import { Stage, Layer, Rect, Transformer } from 'react-konva';
 // import { useModel } from 'umi';
-import type { DataModel, DatModelItem } from '@/typing';
+import type { DataModel, DatModelItem, LocationItem } from '@/typing';
 import { useTimeout } from 'ahooks';
 import { useDebounceFn } from 'ahooks';
 import Konva from 'konva';
 import useModel from 'flooks';
-import { isEqual } from '@/utils/util';
+import { isEqual, equal } from '@/utils/util';
+import {
+  getLineItem,
+  addLine,
+  removeLines,
+  setLocationItems,
+  detectionToLine,
+} from '@/utils/line';
 import canvasDataModel from '@/models1/canvasDataModel';
 import canvasModel from '@/models1/canvasModel';
+import { useImmer } from 'use-immer';
 
 type BaseProps = {
   [key: string]: any;
@@ -29,11 +37,26 @@ export interface ITransformerWrapperProps {
   // onChange: any;
 }
 
+let isA = false;
+let currSeItem = null;
+
 const TransformerWrapper = (Component: FC<BaseProps>) => {
   const WrapperComponent: FC<BaseProps> = (props) => {
-    const { selectNode, shapePanelType, changeCanvas, editNode } =
-      useModel(canvasModel);
+    const {
+      selectNode,
+      shapePanelType,
+      layerRef,
+      changeCanvas,
+      editNode,
+      addNodeLocation,
+      updateNodeLocation,
+      nodeLocations,
+    } = useModel(canvasModel);
     const { changeCanvasModelDataItem } = useModel(canvasDataModel);
+
+    const [state, setState] = useImmer({
+      isDrag: false,
+    });
 
     const shapeRef = React.useRef<any>();
     const trRef = React.useRef<any>();
@@ -75,18 +98,17 @@ const TransformerWrapper = (Component: FC<BaseProps>) => {
       }
 
       return () => {
-        console.log('hooks destory');
+        console.log('hooks destory', props.id);
       };
     }, [isSelected]);
 
     const onTransform = () => {
+      // console.log('onTransform=>');
       if (props.type !== 'text-input') {
         //只有text-input处理
         return;
       }
-
       const node = shapeRef.current;
-      // console.log('onTransform=>', node)
       const scaleX = node.scaleX();
       const scaleY = node.scaleY();
 
@@ -118,11 +140,51 @@ const TransformerWrapper = (Component: FC<BaseProps>) => {
 
       textNode.setAttrs({
         width: textNode.width() * textNode.scaleX(),
+        height: 'auto',
+        // height: textNode.height() * textNode.scaleY(),
         scaleX: 1,
+        // scaleY: 1,
       });
+
+      // console.log(textNode.height());
       // changeCanvasModelDataItem(currItem as DatModelItem);
     };
 
+    const onDragStart = useCallback(() => {
+      setLocationItems(layerRef?.current);
+      setState((draft) => {
+        draft.isDrag = true;
+      });
+    }, [layerRef?.current]);
+
+    const onDragMove = useCallback(
+      (e: Konva.KonvaEventObject<DragEvent>) => {
+        detectionToLine(layerRef?.current, shapeRef.current);
+      },
+      [layerRef?.current],
+    );
+
+    const onDragEnd = useCallback(
+      (e: Konva.KonvaEventObject<DragEvent>) => {
+        // const locationItem = getLocationItem(shapeRef.current);
+        console.warn('drag-end', props);
+        setState((draft) => {
+          draft.isDrag = false;
+        });
+        removeLines(layerRef?.current);
+        // updateNodeLocation(locationItem);
+        // console.log('onDragEnd=>', onDragEnd);
+
+        changeCanvasModelDataItem({
+          ...e.currentTarget.attrs,
+          x: e.target.x(),
+          y: e.target.y(),
+        } as DatModelItem);
+      },
+      [layerRef?.current],
+    );
+
+    // console.log('props=>',  props)
     return (
       <React.Fragment>
         <Component
@@ -131,38 +193,41 @@ const TransformerWrapper = (Component: FC<BaseProps>) => {
           ref={shapeRef}
           {...props}
           isSelected={isSelected}
-          draggable={isSelected}
-          onDragEnd={(e: Konva.KonvaEventObject<DragEvent>) => {
-            changeCanvasModelDataItem({
-              ...props,
-              x: e.target.x(),
-              y: e.target.y(),
-            } as DatModelItem);
-          }}
+          draggable={true}
+          onDragStart={onDragStart}
+          onDragEnd={onDragEnd}
+          onDragMove={onDragMove}
           onTransform={onTransform}
           onTransformEnd={(e: Konva.KonvaEventObject<Event>) => {
             const node = shapeRef.current;
             const scaleX = node.scaleX();
             const scaleY = node.scaleY();
-            // console.log()
-            // debugger;
             // we will reset it back
+            // console.log('e', e, scaleX);
             node.scaleX(1);
             node.scaleY(1);
             // console.log('scaleX=>', scaleX, scaleY);
             const currItem: any = {
-              ...props,
+              // ...props,
+              ...e.currentTarget.attrs,
               x: node.x(),
               y: node.y(),
-              scaleX: 1,
+              // scaleX: 1,
+              // width: node.width(),
+              // height: node.height(),
               width: Math.max(5, node.width() * scaleX),
-              // height: Math.max(node.height() * scaleY),
+              height: Math.max(node.height() * scaleY) + 1,
               rotation: node.rotation(),
-              skewX: node.skewX(),
-              skewY: node.skewY(),
+              // skewX: node.skewX(),
+              // skewY: node.skewY(),
             };
             if (props.fontSize) {
-              currItem.fontSize = props.fontSize * scaleY;
+              if (equal(scaleX, scaleY)) {
+                currItem.fontSize = node.fontSize() * scaleX;
+              } else {
+                currItem.fontSize = node.fontSize() * Math.min(scaleX, scaleY);
+              }
+              // console.log(' node.fontSize()', node.fontSize(), scaleX, scaleY, scaleX === scaleY, currItem, Math.max(node.height() * scaleY) + 1);
             }
             changeCanvasModelDataItem(currItem as DatModelItem);
           }}

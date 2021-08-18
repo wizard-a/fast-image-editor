@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { ShapePanelEnum } from '@/enum';
-import { DatModelItem } from '@/typing';
+import { DatModelItem, LocationItem } from '@/typing';
 import Konva from 'konva';
 
 const CanvasModel = ({ get, set }: any) => ({
@@ -17,6 +17,7 @@ const CanvasModel = ({ get, set }: any) => ({
     scale: 1,
   },
   loading: false,
+  nodeLocations: [],
   // changeIsAnalysis(currIsAnalysis: boolean) {
   //   now({ isAnalysis: currIsAnalysis });
   // },
@@ -41,6 +42,27 @@ const CanvasModel = ({ get, set }: any) => ({
   setLoading: (loading: boolean) => {
     set((state: any) => {
       return { loading: loading };
+    });
+  },
+  addNodeLocation: (locationItem: LocationItem) => {
+    set((state: any) => {
+      // console.log('state.nodeLocations=>', nodeLocations);
+      const result = [...state.nodeLocations, locationItem];
+      window.d = result;
+      return {
+        nodeLocations: result,
+      };
+    });
+  },
+  updateNodeLocation: (locationItem: LocationItem) => {
+    set((state: any) => {
+      let index = state.nodeLocations.findIndex(
+        (item: LocationItem) => item.id === locationItem.id,
+      );
+      state.nodeLocations[index] = locationItem;
+      return {
+        nodeLocations: [...state.nodeLocations],
+      };
     });
   },
 });

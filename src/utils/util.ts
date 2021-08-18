@@ -1,5 +1,6 @@
-import type { DatModelItem } from '@/typing';
+import type { DatModelItem, LocationItem } from '@/typing';
 import { ShapePanelEnum } from '@/enum';
+import Konva from 'konva';
 
 export const uuid = () => {
   const temp_url = URL.createObjectURL(new Blob());
@@ -52,6 +53,10 @@ export const downloadURI = (uri: string, name: string) => {
 
 export const getScalePercent = (scale: number) => {
   return parseInt((scale * 100).toString()) + '%';
+};
+
+export const equal: any = (num1: number, num2: number) => {
+  return num1.toFixed(3) == num2.toFixed(3);
 };
 
 // export const getStageDataByZoom = (width: number, height: number, scale: number) => {
