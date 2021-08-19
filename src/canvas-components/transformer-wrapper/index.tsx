@@ -15,7 +15,6 @@ import Konva from 'konva';
 import useModel from 'flooks';
 import { isEqual, equal } from '@/utils/util';
 import {
-  getLineItem,
   addLine,
   removeLines,
   setLocationItems,
@@ -62,7 +61,8 @@ const TransformerWrapper = (Component: FC<BaseProps>) => {
     const trRef = React.useRef<any>();
     const currScale = React.useRef<any>();
 
-    const isSelected = props.id === selectNode?.id && props.id !== editNode?.id;
+    const isSelected =
+      props.id === selectNode?.id && props.id !== editNode?.id && !state.isDrag;
 
     // console.log(
     //   'isSelected',

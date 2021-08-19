@@ -61,10 +61,7 @@ export type LocationItem = {
   tc: number; // 顶部居中弄对齐线
 };
 
-// 线信息
-export type LineItem = {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
+export type UndoRedoActionType = {
+  type: 'push' | 'undo' | 'redo';
+  data: DatModelItem | null;
 };

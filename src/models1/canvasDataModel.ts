@@ -121,43 +121,50 @@ const initData: DataModel = [
     skewX: 0,
     skewY: 0,
   },
-  {
-    draggable: true,
-    id: 'cb340eb4-777e-43a9-ab3d-eebf46df1136',
-    type: 'image',
-    url: '/image2/1.jpg',
-    x: 142.42857142857156,
-    y: 81.90962940621816,
-    isSelected: false,
-    width: 193.94019696803468,
-    height: 146.45514772602604,
-    rotation: 0,
-    scaleX: 1,
-    scaleY: 1,
-    offsetX: 0,
-    offsetY: 0,
-    skewX: 0,
-    skewY: 0,
-  },
-  {
-    draggable: true,
-    id: '1789615c-ef9a-4378-99cf-292c7e5d47b2',
-    type: 'image',
-    url: '/image2/1.jpg',
-    x: 936.2857142857144,
-    y: 176.19534369193246,
-    isSelected: true,
-    width: 240.7681041998711,
-    height: 181.57607814990322,
-    rotation: 0,
-    scaleX: 1,
-    scaleY: 1,
-    skewX: 0,
-    skewY: 0,
-    offsetX: 0,
-    offsetY: 0,
-  },
+  // {
+  //   draggable: true,
+  //   id: 'cb340eb4-777e-43a9-ab3d-eebf46df1136',
+  //   type: 'image',
+  //   url: '/image2/1.jpg',
+  //   x: 142.42857142857156,
+  //   y: 81.90962940621816,
+  //   isSelected: false,
+  //   width: 193.94019696803468,
+  //   height: 146.45514772602604,
+  //   rotation: 0,
+  //   scaleX: 1,
+  //   scaleY: 1,
+  //   offsetX: 0,
+  //   offsetY: 0,
+  //   skewX: 0,
+  //   skewY: 0,
+  // },
+  // {
+  //   draggable: true,
+  //   id: '1789615c-ef9a-4378-99cf-292c7e5d47b2',
+  //   type: 'image',
+  //   url: '/image2/1.jpg',
+  //   x: 936.2857142857144,
+  //   y: 176.19534369193246,
+  //   isSelected: true,
+  //   width: 240.7681041998711,
+  //   height: 181.57607814990322,
+  //   rotation: 0,
+  //   scaleX: 1,
+  //   scaleY: 1,
+  //   skewX: 0,
+  //   skewY: 0,
+  //   offsetX: 0,
+  //   offsetY: 0,
+  // },
 ];
+
+const recordPush = (nodes: any, undoRedoData: any, updateUndoRedoData: any) => {
+  // const currNodes =  undoRedoData.activeSnapshot || nodes;
+  const newNodes = undoRedoData.activeSnapshot || nodes;
+  updateUndoRedoData({ type: 'push', data: newNodes });
+  return newNodes;
+};
 
 const canvasDataModel = ({ get, set }: any) => ({
   width: 1200,
@@ -167,32 +174,46 @@ const canvasDataModel = ({ get, set }: any) => ({
     set(currCanvasModel);
   },
   changeCanvasModelDataItem: (currDataModelItem: DatModelItem) => {
-    // console.log('currDataModelItem=>', currDataModelItem);
-    const { changeCanvas } = get(canvasModel);
+    const { nodes } = get();
+    const { changeCanvas, updateUndoRedoData, undoRedoData } = get(canvasModel);
     changeCanvas({
       selectNode: currDataModelItem,
     });
+    const currNodes = undoRedoData.activeSnapshot || nodes;
+    updateUndoRedoData({ type: 'push', data: currNodes });
     set((state: any) => {
-      let index = state.nodes.findIndex(
+      let index = currNodes.findIndex(
         (item: DatModelItem) => item.id === currDataModelItem.id,
       );
-
-      state.nodes[index] = currDataModelItem;
+      currNodes[index] = currDataModelItem;
       return {
-        nodes: [...state.nodes],
+        nodes: [...currNodes],
       };
     });
   },
+  // operationNodeCount: (node: DatModelItem) => {
+  //   const { nodes } = get();
+  //   const { updateUndoRedoData, undoRedoData} = get(canvasModel);
+  //   const currNodes =  undoRedoData.activeSnapshot || nodes;
+  //   updateUndoRedoData({type:'push', data: currNodes});
+  //   set((state: any) => {
+  //     return {
+  //       nodes: [...currNodes, node],
+  //     };
+  //   });
+
+  // },
   addNode: (node: DatModelItem, nodeWidth: number, nodeHeight: number) => {
-    const { width, height } = get();
-    const { changeCanvas } = get(canvasModel);
+    const { width, height, nodes } = get();
+    const { changeCanvas, undoRedoData, updateUndoRedoData } = get(canvasModel);
     const [x, y] = getCenterXY(width, height, nodeWidth, nodeHeight);
     node.x = x;
     node.y = y;
     // debugger;
+    const newNodes = recordPush(nodes, undoRedoData, updateUndoRedoData);
     set((state: any) => {
       return {
-        nodes: [...state.nodes, node],
+        nodes: [...newNodes, node],
       };
     });
 
@@ -231,21 +252,26 @@ const canvasDataModel = ({ get, set }: any) => ({
     addNode(currTextDateItem, textWidth, textHeight);
   },
   removeNode: (id: string) => {
+    const { nodes } = get();
+    const { undoRedoData, updateUndoRedoData } = get(canvasModel);
+    const currNodes = recordPush(nodes, undoRedoData, updateUndoRedoData);
     set((state: any) => {
-      let newNodes = state.nodes.filter((item: DatModelItem) => item.id !== id);
+      let newNodes = currNodes.filter((item: DatModelItem) => item.id !== id);
       return {
         nodes: [...newNodes],
       };
     });
   },
   copyNode: (item: DatModelItem) => {
-    const { changeCanvas } = get(canvasModel);
+    const { nodes } = get();
+    const { changeCanvas, undoRedoData, updateUndoRedoData } = get(canvasModel);
     item.id = uuid();
     item.x += 20;
     item.y += 20;
+    const newNodes = recordPush(nodes, undoRedoData, updateUndoRedoData);
     set((state: any) => {
       return {
-        nodes: [...state.nodes, item],
+        nodes: [...newNodes, item],
       };
     });
     changeCanvas({

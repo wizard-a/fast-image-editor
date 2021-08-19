@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
-import { Button, message } from 'antd';
+import { Button, message, Tooltip } from 'antd';
 import useModel from 'flooks';
+import { UndoOutlined, RedoOutlined } from '@ant-design/icons';
 import canvasModel from '@/models1/canvasModel';
 import canvasDataModel from '@/models1/canvasDataModel';
 import { downloadURI } from '@/utils/util';
@@ -9,7 +10,7 @@ import styles from './header.less';
 export interface IHeaderProps {}
 
 const Header: FC<IHeaderProps> = (props) => {
-  const { stageRef } = useModel(canvasModel);
+  const { stageRef, updateUndoRedoData, undoRedoData } = useModel(canvasModel);
   const { nodes } = useModel(canvasDataModel);
 
   const download = () => {
@@ -22,9 +23,42 @@ const Header: FC<IHeaderProps> = (props) => {
     console.log('节点内容=>', JSON.stringify(nodes));
     message.success('请在控制台查看JSON');
   };
+
+  const undo = () => {
+    updateUndoRedoData({ type: 'undo' });
+  };
+
+  const redo = () => {
+    updateUndoRedoData({ type: 'redo' });
+  };
   return (
     <div className={styles.header}>
       <div className={styles.title}>图片编辑器</div>
+      <div className={styles.center}>
+        <Tooltip placement="bottom" title="撤销">
+          <Button
+            disabled={
+              undoRedoData.snapshots.length === 0 || undoRedoData.current === 0
+            }
+            style={{ marginRight: 20 }}
+            onClick={undo}
+            type="primary"
+            shape="circle"
+            icon={<UndoOutlined />}
+          />
+          {/* <UndoOutlined style={{fontSize: 24, marginRight: 30, cursor: 'pointer'}} /> */}
+        </Tooltip>
+        <Tooltip placement="bottom" title="回退">
+          <Button
+            disabled={undoRedoData.current === -1}
+            onClick={redo}
+            type="primary"
+            shape="circle"
+            icon={<RedoOutlined />}
+          />
+          {/* <RedoOutlined  onClick={redo} style={{fontSize: 24, cursor: 'pointer'}} /> */}
+        </Tooltip>
+      </div>
       <div className={styles.right}>
         <Button type="primary" onClick={download}>
           下载

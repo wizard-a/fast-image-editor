@@ -49,14 +49,14 @@ const Toolbar: FC<IToolbarProps> = (props) => {
 
   return (
     <div className={styles.toolbar}>
-      <ZoomInOutlined
-        style={{ color: 'rgba(16, 38, 58, 0.65)', fontSize: 20 }}
-        onClick={() => zoom('zoomIn')}
-      />
-      <span className={styles.text}>{getScalePercent(stageData.scale)}</span>
       <ZoomOutOutlined
         style={{ color: 'rgba(16, 38, 58, 0.65)', fontSize: 20 }}
         onClick={() => zoom('zoomOut')}
+      />
+      <span className={styles.text}>{getScalePercent(stageData.scale)}</span>
+      <ZoomInOutlined
+        style={{ color: 'rgba(16, 38, 58, 0.65)', fontSize: 20 }}
+        onClick={() => zoom('zoomIn')}
       />
     </div>
   );

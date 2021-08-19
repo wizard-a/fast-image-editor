@@ -1,5 +1,5 @@
 import Konva from 'konva';
-import { LocationItem, LineItem } from '@/typing';
+import { LocationItem } from '@/typing';
 
 const threshold = 6;
 // 存放所有的辅助线
@@ -49,28 +49,6 @@ export const setLocationItems = (layer: Konva.Layer) => {
     }
   });
   console.log('locationItems=>', locationItems);
-};
-
-export const getLineItem = (
-  originItem: LocationItem,
-  targetItem: LocationItem,
-) => {
-  let minItem: LocationItem, maxItem: LocationItem;
-  if (originItem.y > targetItem.y) {
-    minItem = targetItem;
-    maxItem = originItem;
-  } else {
-    minItem = originItem;
-    maxItem = targetItem;
-  }
-  const lineItem: LineItem = {
-    x: targetItem.x,
-    y: minItem.y,
-    width: 1,
-    height: maxItem.y - minItem.y + maxItem.h,
-  };
-
-  return lineItem;
 };
 
 /**

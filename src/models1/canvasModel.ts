@@ -1,7 +1,10 @@
 import { useState, useCallback } from 'react';
 import { ShapePanelEnum } from '@/enum';
-import { DatModelItem, LocationItem } from '@/typing';
+import { DatModelItem, LocationItem, UndoRedoActionType } from '@/typing';
 import Konva from 'konva';
+import _ from 'lodash';
+
+let threshold = 100;
 
 const CanvasModel = ({ get, set }: any) => ({
   shapePanelType: ShapePanelEnum.ShapePanel, // 用枚举代替
@@ -18,9 +21,12 @@ const CanvasModel = ({ get, set }: any) => ({
   },
   loading: false,
   nodeLocations: [],
-  // changeIsAnalysis(currIsAnalysis: boolean) {
-  //   now({ isAnalysis: currIsAnalysis });
-  // },
+  undoRedoData: {
+    // 撤销重做数据结构
+    activeSnapshot: null, // 当前激活的快照数据
+    snapshots: [], // 存储的快照数据
+    current: -1, // 当前索引
+  },
   changeCanvas: (currCanvasModel: any) => {
     set((state: any) => {
       return Object.assign(state, currCanvasModel);
@@ -48,7 +54,6 @@ const CanvasModel = ({ get, set }: any) => ({
     set((state: any) => {
       // console.log('state.nodeLocations=>', nodeLocations);
       const result = [...state.nodeLocations, locationItem];
-      window.d = result;
       return {
         nodeLocations: result,
       };
@@ -62,6 +67,63 @@ const CanvasModel = ({ get, set }: any) => ({
       state.nodeLocations[index] = locationItem;
       return {
         nodeLocations: [...state.nodeLocations],
+      };
+    });
+  },
+  // 更新快照数据
+  updateUndoRedoData: ({ type, data }: UndoRedoActionType) => {
+    const newUndoRedoData: any = {};
+
+    set((state: any) => {
+      const { current, snapshots } = state.undoRedoData;
+      if (type === 'push') {
+        const newData = _.cloneDeep(data);
+        if (current === -1) {
+          newUndoRedoData.snapshots = [...snapshots, newData];
+        } else {
+          // 当前已经撤销，重新操作的时候要把某些记录取消
+          newUndoRedoData.snapshots = snapshots
+            .slice(0, current)
+            .concat([newData]);
+        }
+        newUndoRedoData.activeSnapshot = null;
+        newUndoRedoData.current = -1;
+      }
+
+      if (type === 'undo') {
+        // debugger;
+        if (current === -1) {
+          newUndoRedoData.current = snapshots.length - 1;
+        } else {
+          newUndoRedoData.current = current - 1;
+        }
+        newUndoRedoData.activeSnapshot = snapshots[newUndoRedoData.current];
+      }
+
+      if (type === 'redo') {
+        if (current != -1) {
+          newUndoRedoData.current = current + 1;
+        }
+        if (current === snapshots.length - 1) {
+          newUndoRedoData.activeSnapshot = null;
+          newUndoRedoData.current = -1;
+        } else {
+          newUndoRedoData.activeSnapshot = snapshots[newUndoRedoData.current];
+        }
+      }
+
+      if (newUndoRedoData?.snapshots?.length > threshold) {
+        // debugger;
+        newUndoRedoData.snapshots = newUndoRedoData.snapshots.splice(
+          -threshold,
+        );
+      }
+
+      return {
+        undoRedoData: {
+          ...state.undoRedoData,
+          ...newUndoRedoData,
+        },
       };
     });
   },

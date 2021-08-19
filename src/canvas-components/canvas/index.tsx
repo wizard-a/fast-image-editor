@@ -26,10 +26,15 @@ const TransformerImage = TransformerWrapper(Image);
 // const TransformerHtml2 = TransformerWrapper(Group);
 
 const Canvas: FC<ICanvasProps> = (props) => {
-  // const { stageRef, stageData, changeCanvas } = useModel(canvasModel);
   const { width, height, nodes } = useModel(canvasDataModel);
-  const { changeCanvas, selectNode, stageData, loading } =
-    useModel(canvasModel);
+  const {
+    changeCanvas,
+    selectNode,
+    stageData,
+    loading,
+    updateUndoRedoData,
+    undoRedoData,
+  } = useModel(canvasModel);
   const ref = useRef<HTMLDivElement>(null);
   const stageRef = useRef<Konva.Stage>(null);
   const layerRef = useRef<Konva.Layer>(null);
@@ -39,17 +44,6 @@ const Canvas: FC<ICanvasProps> = (props) => {
   // window.stageRef = stageRef;
   // window.layerRef = layerRef;
   useEffect(() => {
-    // changeCanvas({
-    //   stageRef,
-    //   layerRef,
-    //   bgRef: bgRef,
-    //   canvasRef: ref,
-    //   // stageData: {
-    //   //   ...stageData,
-    //   //   // scale: Math.min(scaleX, scaleY),
-    //   // }
-    // });
-    // console.log('ref?.current', ref?.current, loading)
     if (ref.current && !loading) {
       const scaleX = (ref.current.offsetHeight - 120) / stageData.height;
       const scaleY = (ref.current.offsetWidth - 120) / stageData.width;
@@ -74,6 +68,8 @@ const Canvas: FC<ICanvasProps> = (props) => {
         changeCanvasPanel();
       }, 0);
     }
+
+    // updateUndoRedoData({type:'push', data: nodes});
   }, []);
 
   useEffect(() => {
@@ -148,7 +144,13 @@ const Canvas: FC<ICanvasProps> = (props) => {
   };
 
   const getJsx = () => {
-    return nodes.map((item: DatModelItem) => {
+    const data = undoRedoData.activeSnapshot || nodes;
+    console.log(
+      'undoRedoData.activeSnapshot=>',
+      undoRedoData.activeSnapshot,
+      data,
+    );
+    return data.map((item: DatModelItem) => {
       return getJsxItem(item);
     });
   };
@@ -163,7 +165,7 @@ const Canvas: FC<ICanvasProps> = (props) => {
   };
 
   const content = getJsx();
-  console.log('content=>', content);
+  // console.log('content=>', content);
   const top =
     ref.current && stageData.height - (ref.current.clientHeight - 120) > 0
       ? stageData.height - (ref.current.clientHeight - 120)
