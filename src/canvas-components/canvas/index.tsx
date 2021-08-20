@@ -145,11 +145,6 @@ const Canvas: FC<ICanvasProps> = (props) => {
 
   const getJsx = () => {
     const data = undoRedoData.activeSnapshot || nodes;
-    console.log(
-      'undoRedoData.activeSnapshot=>',
-      undoRedoData.activeSnapshot,
-      data,
-    );
     return data.map((item: DatModelItem) => {
       return getJsxItem(item);
     });

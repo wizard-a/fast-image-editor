@@ -48,7 +48,7 @@ const Header: FC<IHeaderProps> = (props) => {
           />
           {/* <UndoOutlined style={{fontSize: 24, marginRight: 30, cursor: 'pointer'}} /> */}
         </Tooltip>
-        <Tooltip placement="bottom" title="回退">
+        <Tooltip placement="bottom" title="重做">
           <Button
             disabled={undoRedoData.current === -1}
             onClick={redo}

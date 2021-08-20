@@ -222,22 +222,22 @@ export const detectionToLine = (layer: Konva.Layer, shape: Konva.Shape) => {
       addLine(layer, locationItem, item, DIRECTION.bottom);
     }
 
-    if (Math.abs(locationItem.tc - item.tc) <= threshold) {
-      // 处理顶部居中
-      shape.setPosition({ x: locationItem.x, y: item.tc - locationItem.h / 2 });
-      addLine(layer, locationItem, item, DIRECTION.topCenter);
-    }
+    // if (Math.abs(locationItem.tc - item.tc) <= threshold) {
+    //   // 处理顶部居中
+    //   shape.setPosition({ x: locationItem.x, y: item.tc - locationItem.h / 2 });
+    //   addLine(layer, locationItem, item, DIRECTION.topCenter);
+    // }
 
-    if (Math.abs(locationItem.b - item.t) <= threshold) {
-      // 处理垂底部方向
-      shape.setPosition({ x: locationItem.l, y: item.t - locationItem.h });
-      addLine(layer, item, locationItem, DIRECTION.bottom);
-    }
+    // if (Math.abs(locationItem.b - item.t) <= threshold) {
+    //   // 处理垂底部方向
+    //   shape.setPosition({ x: locationItem.l, y: item.t - locationItem.h });
+    //   addLine(layer, item, locationItem, DIRECTION.bottom);
+    // }
 
-    if (Math.abs(locationItem.b - item.b) <= threshold) {
-      // 右侧相等
-      shape.setPosition({ x: locationItem.l, y: item.b - locationItem.h });
-      addLine(layer, item, locationItem, DIRECTION.bottom);
-    }
+    // if (Math.abs(locationItem.b - item.b) <= threshold) {
+    //   // 右侧相等
+    //   shape.setPosition({ x: locationItem.l, y: item.b - locationItem.h });
+    //   addLine(layer, item, locationItem, DIRECTION.bottom);
+    // }
   });
 };
