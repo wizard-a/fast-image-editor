@@ -1,5 +1,17 @@
 {
-  "private": true,
+  "name": "fast-image-editor",
+  "version": "0.0.1",
+  "description": "一块开源图片编辑器，采用React+Typescript+React-Konva开发。",
+  "author": "杰出D",
+  "license": "MIT",
+  "homepage": "https://github.com/jiechud/fast-image-editor#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jiechud/fast-image-editor.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jiechud/fast-image-editor/issues"
+  },
   "scripts": {
     "start": "umi dev",
     "build": "umi build",

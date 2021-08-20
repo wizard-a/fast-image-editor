@@ -1,13 +1,41 @@
-# Fast-Image-Editor
+<h1 align="center">Welcome to fast-image-editor 👋</h1>
+<p>
+  <img alt="Version" src="https://img.shields.io/badge/version-0.0.1-blue.svg?cacheSeconds=2592000" />
+  <a href="http://39.97.252.98:3000/doc" target="_blank">
+    <img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg" />
+  </a>
+  <a href="https://github.com/jiechud/fast-image-editor/graphs/commit-activity" target="_blank">
+    <img alt="Maintenance" src="https://img.shields.io/badge/Maintained%3F-yes-green.svg" />
+  </a>
+  <a href="https://github.com/jiechud/fast-image-editor/blob/master/LICENSE" target="_blank">
+    <img alt="License: MIT" src="https://img.shields.io/github/license/jiechud/fast-image-editor" />
+  </a>
+</p>
 
-## 演示地址
-[演示地址](http://39.97.252.98:3000/)
+> 一块开源图片编辑器，采用React+Typescript+React-Konva开发。
 
-## 快速启动
--   `git clone git@github.com:jiechud/fast-image-editor.git`
--   `yarn install || npm install`
--   `yarn dev` 启动服务
--   打开浏览器
+### 🏠 [Homepage](https://github.com/jiechud/fast-image-editor#readme)
+
+### ✨ [演示地址](http://39.97.252.98:3000/)
+
+## Install
+
+```sh
+yarn install
+```
+
+## Usage
+
+```sh
+yarn run start
+```
+
+## Run tests
+
+```sh
+yarn run test
+```
+
 
 ## 项目目录
 ```
@@ -84,24 +112,29 @@
 | ahooks |  提供了大量自应用的高级 Hooks |  https://github.com/alibaba/hooks |
 | react-color| 一个React颜色选择器   | https://github.com/casesandberg/react-color  |
 
-
-
 ## 联系我
 
-建立了一个微信交流群，如需沟通讨论，请加入。
+建立了一个微信交流群，请添加微信号`q1454763497`,备注`image editor`,我会拉你进群
 
-![image.png](https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/24b984de53f64a419ba9ae0d92621a47~tplv-k3u1fbpfcp-watermark.image)
+## Author
 
-二维码过期，请添加微信号`q1454763497`,备注`image editor`,我会拉你进群
+👤 **杰出D**
 
-## 地址
+* Website: https://juejin.cn/user/2981531265821416/posts
+* Github: [@jiechud](https://github.com/jiechud)
 
-* [演示地址](http://39.97.252.98:3000/)
-* [代码地址](https://github.com/jiechud/fast-image-editor)
+## 🤝 Contributing
 
+Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/jiechud/fast-image-editor/issues). You can also take a look at the [contributing guide](https://github.com/jiechud/fast-image-editor/blob/master/CONTRIBUTING.md).
 
-## 总结
-大家可以尝试一下，有bug可以提[issues](https://github.com/jiechud/fast-image-editor/issues)，我会第一时间修复.
+## Show your support
 
-大家觉得有帮助，请在[github](https://github.com/jiechud/fast-image-editor)帮忙star一下。
+Give a ⭐️ if this project helped you!
 
+## 📝 License
+
+Copyright © 2021 [杰出D](https://github.com/jiechud).<br />
+This project is [MIT](https://github.com/jiechud/fast-image-editor/blob/master/LICENSE) licensed.
+
+***
+_This README was generated with ❤️ by [readme-md-generator](https://github.com/kefranabg/readme-md-generator)_
