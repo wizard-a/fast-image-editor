@@ -151,29 +151,17 @@ const TransformerWrapper = (Component: FC<BaseProps>) => {
     };
 
     const onDragStart = useCallback(() => {
-      setLocationItems(layerRef?.current);
       setState((draft) => {
         draft.isDrag = true;
       });
     }, [layerRef?.current]);
 
-    const onDragMove = useCallback(
-      (e: Konva.KonvaEventObject<DragEvent>) => {
-        detectionToLine(layerRef?.current, shapeRef.current);
-      },
-      [layerRef?.current],
-    );
-
     const onDragEnd = useCallback(
       (e: Konva.KonvaEventObject<DragEvent>) => {
-        // const locationItem = getLocationItem(shapeRef.current);
-        console.warn('drag-end', props);
+        // console.warn('drag-end', props);
         setState((draft) => {
           draft.isDrag = false;
         });
-        removeLines(layerRef?.current);
-        // updateNodeLocation(locationItem);
-        // console.log('onDragEnd=>', onDragEnd);
 
         changeCanvasModelDataItem({
           ...e.currentTarget.attrs,
@@ -196,7 +184,6 @@ const TransformerWrapper = (Component: FC<BaseProps>) => {
           draggable={true}
           onDragStart={onDragStart}
           onDragEnd={onDragEnd}
-          onDragMove={onDragMove}
           onTransform={onTransform}
           onTransformEnd={(e: Konva.KonvaEventObject<Event>) => {
             const node = shapeRef.current;

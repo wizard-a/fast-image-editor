@@ -16,6 +16,14 @@ import canvasModel from '@/models1/canvasModel';
 import { useClickAway, useSize } from 'ahooks';
 import { Spin } from 'antd';
 import type { DatModelItem, BgModel, TextModel } from '@/typing';
+import {
+  removeLines,
+  detectionToLine,
+  getLineGuideStops,
+  getObjectSnappingEdges,
+  getGuides,
+  drawGuides,
+} from '@/utils/line1';
 import styles from './canvas.less';
 
 export interface ICanvasProps {}
@@ -159,6 +167,15 @@ const Canvas: FC<ICanvasProps> = (props) => {
     });
   };
 
+  const onDragMove = useCallback((e: Konva.KonvaEventObject<DragEvent>) => {
+    if (layerRef.current)
+      detectionToLine(layerRef.current, e.target as Konva.Shape);
+  }, []);
+
+  const onDragEnd = useCallback(() => {
+    if (layerRef.current) removeLines(layerRef.current);
+  }, []);
+
   const content = getJsx();
   // console.log('content=>', content);
   const top =
@@ -194,7 +211,13 @@ const Canvas: FC<ICanvasProps> = (props) => {
               ref={stageRef}
               onClick={onStageClick}
             >
-              <Layer ref={layerRef}>{content}</Layer>
+              <Layer
+                onDragMove={onDragMove}
+                onDragEnd={onDragEnd}
+                ref={layerRef}
+              >
+                {content}
+              </Layer>
             </Stage>
           </div>
         )}

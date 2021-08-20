@@ -61,9 +61,10 @@ const initData: DataModel = [
   {
     id: 'bg',
     type: 'color',
-    color: 'rgba(207, 158, 61, 1)',
+    color: '#F5EDDF',
   },
   {
+    name: 'node',
     draggable: true,
     x: 436,
     y: 49.772379680409145,
@@ -86,6 +87,7 @@ const initData: DataModel = [
     height: 60.99999999999992,
   },
   {
+    name: 'node',
     draggable: true,
     id: '3f0dfc51-5481-49d0-8f3a-8a93dd3e3bfa',
     type: 'image',
@@ -104,6 +106,7 @@ const initData: DataModel = [
     skewY: 0,
   },
   {
+    name: 'node',
     draggable: true,
     id: 'b366673e-a7cf-445e-8e52-65ce3ecb7b8b',
     type: 'image',
@@ -122,6 +125,7 @@ const initData: DataModel = [
     skewY: 0,
   },
   {
+    name: 'node',
     draggable: true,
     id: 'cb340eb4-777e-43a9-ab3d-eebf46df1136',
     type: 'image',
