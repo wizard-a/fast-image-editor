@@ -13,13 +13,8 @@ import { useTimeout } from 'ahooks';
 import { useDebounceFn } from 'ahooks';
 import Konva from 'konva';
 import useModel from 'flooks';
-import { isEqual, equal } from '@/utils/util';
-import {
-  addLine,
-  removeLines,
-  setLocationItems,
-  detectionToLine,
-} from '@/utils/line';
+import { isEqual, equal, getShapeChildren, getShape } from '@/utils/util';
+
 import canvasDataModel from '@/models1/canvasDataModel';
 import canvasModel from '@/models1/canvasModel';
 import { useImmer } from 'use-immer';
@@ -50,7 +45,6 @@ const TransformerWrapper = (Component: FC<BaseProps>) => {
       addNodeLocation,
       updateNodeLocation,
       nodeLocations,
-      child,
     } = useModel(canvasModel);
     const { changeCanvasModelDataItem } = useModel(canvasDataModel);
 
@@ -66,7 +60,7 @@ const TransformerWrapper = (Component: FC<BaseProps>) => {
       props.id === selectNode?.id && props.id !== editNode?.id && !state.isDrag;
 
     // console.log(
-    //   'isSelected',
+    //   'group=>isSelected',
     //   isSelected,
     //   props,
     //   selectNode?.id
@@ -74,11 +68,7 @@ const TransformerWrapper = (Component: FC<BaseProps>) => {
 
     const { run } = useDebounceFn(
       (e) => {
-        console.log('onSelect=>执行了');
-        if (props.child) {
-          console.log('是子集');
-          return;
-        }
+        console.log('onSelect=>执行了', e);
         // 阻止事件冒泡
         e.cancelBubble = true;
 
@@ -89,21 +79,18 @@ const TransformerWrapper = (Component: FC<BaseProps>) => {
       { wait: 300, leading: true, trailing: false },
     );
 
+    useEffect(() => {}, []);
+
     useEffect(() => {
       if (isSelected) {
         // we need to attach transformer manually
         trRef.current.nodes([shapeRef.current]);
         trRef.current.node = shapeRef.current;
         trRef.current.getLayer().batchDraw();
-
-        currScale.current = {
-          scaleX: shapeRef.current.scaleX(),
-          scaleY: shapeRef.current.scaleY(),
-        };
       }
 
       return () => {
-        console.log('hooks destory', props.id, shapeRef);
+        console.log('hooks destory', props.id);
       };
     }, [isSelected]);
 
@@ -161,21 +148,22 @@ const TransformerWrapper = (Component: FC<BaseProps>) => {
       });
     }, [layerRef?.current]);
 
-    const onDragEnd = useCallback(
-      (e: Konva.KonvaEventObject<DragEvent>) => {
-        // console.warn('drag-end', props);
-        setState((draft) => {
-          draft.isDrag = false;
-        });
+    const onDragEnd = (e: Konva.KonvaEventObject<DragEvent>) => {
+      setState((draft) => {
+        draft.isDrag = false;
+      });
+      const currItem = getShape(e.target);
+      console.log('gropItem=>', currItem);
+      // debugger;
+      changeCanvasModelDataItem(currItem as DatModelItem);
+    };
 
-        changeCanvasModelDataItem({
-          ...e.currentTarget.attrs,
-          x: e.target.x(),
-          y: e.target.y(),
-        } as DatModelItem);
-      },
-      [layerRef?.current],
-    );
+    const onTransformEnd = (e: Konva.KonvaEventObject<Event>) => {
+      const node = shapeRef.current;
+      const currItem = getShape(node);
+
+      changeCanvasModelDataItem(currItem as DatModelItem);
+    };
 
     // console.log('props=>',  props)
     return (
@@ -186,43 +174,11 @@ const TransformerWrapper = (Component: FC<BaseProps>) => {
           ref={shapeRef}
           {...props}
           isSelected={isSelected}
-          // draggable={}
+          draggable={true}
           onDragStart={onDragStart}
           onDragEnd={onDragEnd}
           onTransform={onTransform}
-          onTransformEnd={(e: Konva.KonvaEventObject<Event>) => {
-            const node = shapeRef.current;
-            const scaleX = node.scaleX();
-            const scaleY = node.scaleY();
-            // we will reset it back
-            // console.log('e', e, scaleX);
-            node.scaleX(1);
-            node.scaleY(1);
-            // console.log('scaleX=>', scaleX, scaleY);
-            const currItem: any = {
-              // ...props,
-              ...e.currentTarget.attrs,
-              x: node.x(),
-              y: node.y(),
-              // scaleX: 1,
-              // width: node.width(),
-              // height: node.height(),
-              width: Math.max(5, node.width() * scaleX),
-              height: Math.max(node.height() * scaleY) + 1,
-              rotation: node.rotation(),
-              // skewX: node.skewX(),
-              // skewY: node.skewY(),
-            };
-            if (props.fontSize) {
-              if (equal(scaleX, scaleY)) {
-                currItem.fontSize = node.fontSize() * scaleX;
-              } else {
-                currItem.fontSize = node.fontSize() * Math.min(scaleX, scaleY);
-              }
-              // console.log(' node.fontSize()', node.fontSize(), scaleX, scaleY, scaleX === scaleY, currItem, Math.max(node.height() * scaleY) + 1);
-            }
-            changeCanvasModelDataItem(currItem as DatModelItem);
-          }}
+          onTransformEnd={onTransformEnd}
         />
         {isSelected && (
           <Transformer

@@ -9,13 +9,14 @@ export type ElementType =
   | 'text'
   | 'rect'
   | 'text-input'
-  | 'bg-image';
+  | 'bg-image'
+  | 'group';
 
 export type BaseModel = {
   id: string;
   type: ElementType;
-  x: number;
-  y: number;
+  x?: number;
+  y?: number;
 };
 
 /**
@@ -36,10 +37,14 @@ export type TextModel = BaseModel & Konva.TextConfig;
  */
 export type ReactModel = BaseModel & Konva.RectConfig;
 
+export type GroupModel = BaseModel & {
+  children: Array<DatModelItem>;
+};
+
 /**
  * DataModel Item
  */
-export type DatModelItem = BgModel | TextModel | ReactModel;
+export type DatModelItem = BgModel | TextModel | ReactModel | GroupModel;
 
 // 画布内数据类
 export type DataModel = Array<DatModelItem>;

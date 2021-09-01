@@ -41,6 +41,7 @@
     "immer": "^9.0.5",
     "konva": "^8.1.1",
     "lodash": "^4.17.21",
+    "mousetrap": "^1.6.5",
     "react-color": "^2.19.3",
     "react-konva": "^17.0.2-4",
     "react-konva-utils": "^0.1.7",

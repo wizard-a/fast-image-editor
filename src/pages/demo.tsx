@@ -1,11 +1,14 @@
 import text from '@/components/text';
 import React, { FC, useRef, useState } from 'react';
+import { useRouteMatch } from 'umi';
 
 export interface IDemoProps {}
 
 const Demo: FC<IDemoProps> = (props) => {
   const inputRef = useRef<HTMLInputElement>();
 
+  const match = useRouteMatch();
+  console.log('match', match);
   const [state, setState] = useState(null);
   const onInput = (e: any) => {
     console.log('value', e.target.value);

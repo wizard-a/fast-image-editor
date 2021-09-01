@@ -1,6 +1,7 @@
 import type { DatModelItem, LocationItem } from '@/typing';
 import { ShapePanelEnum } from '@/enum';
 import Konva from 'konva';
+import { Shape, Group } from 'konva/lib/Shape';
 
 export const uuid = () => {
   const temp_url = URL.createObjectURL(new Blob());
@@ -57,6 +58,34 @@ export const getScalePercent = (scale: number) => {
 
 export const equal: any = (num1: number, num2: number) => {
   return num1.toFixed(3) == num2.toFixed(3);
+};
+
+export const getShapeChildren = (children: Array<Shape>) => {
+  return children.map((item) => {
+    return {
+      ...item.attrs,
+      x: item.x(),
+      y: item.y(),
+    };
+  });
+};
+
+export const getShape = (shape: Group | Shape) => {
+  const currShape: Group | Shape = {
+    ...shape.attrs,
+    x: shape.x(),
+    y: shape.y(),
+    rotation: shape.rotation(),
+    skewX: shape.skewX(),
+    skewY: shape.skewY(),
+    scaleX: shape.scaleX(),
+    scaleY: shape.scaleY(),
+  };
+
+  if (shape.children && shape.children.length > 0) {
+    currShape.children = getShapeChildren(shape.children);
+  }
+  return currShape;
 };
 
 // export const getStageDataByZoom = (width: number, height: number, scale: number) => {
