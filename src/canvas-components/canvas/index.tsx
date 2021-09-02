@@ -14,72 +14,168 @@ import { TextInput, ContextMenu, Image, Toolbar } from '@/components';
 import useModel from 'flooks';
 import canvasDataModel from '@/models1/canvasDataModel';
 import canvasModel from '@/models1/canvasModel';
-import { useSize } from 'ahooks';
+import { useSize, useUpdate } from 'ahooks';
 import { Spin } from 'antd';
 // import mousetrap from 'mousetrap';
 // import { shiftAndClick } from '@/utils/Keyboard';
 import { uuid } from '@/utils/util';
 import type { DatModelItem, BgModel, TextModel, GroupModel } from '@/typing';
-import { removeLines, detectionToLine } from '@/utils/line1';
+import { removeLines, detectionToLine } from '@/core/utils/line1';
+import CanvasClass from '@/core/Canvas';
+
 import styles from './canvas.less';
+import { render } from 'react-dom';
 
 export interface ICanvasProps {}
+const newData = [
+  {
+    id: 'bg',
+    type: 'color',
+    fill: '#F5EDDF',
+  },
+  {
+    name: 'node',
+    draggable: true,
+    x: 436,
+    y: 49.772379680409145,
+    id: '28608db7-7f68-4fb4-bfc9-54522364c617',
+    fontSize: 60,
+    type: 'text-input',
+    text: '撤销重做案例',
+    fill: '#000',
+    width: 360.0000000000001,
+    isSelected: true,
+    lineHeight: 1,
+    rotation: 0,
+    scaleX: 1,
+    scaleY: 1,
+    offsetX: 0,
+    offsetY: 0,
+    skewX: 0,
+    skewY: 0,
+    visible: true,
+    height: 60.99999999999992,
+  },
+  {
+    width: 162.8722198534792,
+    height: 123.15416489010939,
+    name: 'node',
+    draggable: true,
+    id: '1',
+    type: 'image',
+    x: 142.42857142857156,
+    y: 357.7714218418357,
+    isSelected: false,
+    rotation: 0,
+    scaleX: 1,
+    scaleY: 1,
+    offsetX: 0,
+    offsetY: 0,
+    skewX: 0,
+    skewY: 0,
+    // "child": true,
+    url: '/image2/1.jpg',
+  },
+  {
+    width: 193.94019696803468,
+    height: 146.45514772602604,
+    name: 'node',
+    draggable: true,
+    id: '2',
+    type: 'image',
+    x: 142.42857142857156,
+    y: 81.90962940621816,
+    isSelected: false,
+    rotation: 0,
+    scaleX: 1,
+    scaleY: 1,
+    offsetX: 0,
+    offsetY: 0,
+    skewX: 0,
+    skewY: 0,
+    // "child": true,
+    url: '/image2/14.jpeg',
+  },
+  {
+    width: 193.94019696803468,
+    height: 146.45514772602604,
+    name: 'node',
+    draggable: true,
+    id: '3',
+    type: 'image',
+    x: 342.42857142857156,
+    y: 181.90962940621816,
+    isSelected: false,
+    rotation: 0,
+    scaleX: 1,
+    scaleY: 1,
+    offsetX: 0,
+    offsetY: 0,
+    skewX: 0,
+    skewY: 0,
+    // "child": true,
+    url: '/image2/14.jpeg',
+  },
+  // {
+  //     "draggable": true,
+  //     "name": "group",
+  //     "id": "b366673e-a7cf-445e-8e52-65ce3ecb7b81",
+  //     "type": "group",
+  //     "x": -142.61460101867573,
+  //     "y": 29.278321955451514,
+  //     "isSelected": true,
+  //     "rotation": 0,
+  //     "scaleX": 1,
+  //     "scaleY": 1,
+  //     "offsetX": 0,
+  //     "offsetY": 0,
+  //     "skewX": 0,
+  //     "skewY": 0,
+  //     "children": [
 
-const TransformerTextInput = TransformerWrapper(TextInput);
-const TransformerText = TransformerWrapper(Text);
-const TransformerImage = TransformerWrapper(Image);
-const TransformerGroup = GroupTransformerWrapper(Group);
+  //     ]
+  // }
+];
 // const TransformerHtml2 = TransformerWrapper(Group);
 
 const Canvas: FC<ICanvasProps> = (props) => {
-  const { width, height, nodes, addGroup, removeGroup } =
-    useModel(canvasDataModel);
-  const {
-    changeCanvas,
-    selectNode,
-    stageData,
-    loading,
-    updateUndoRedoData,
-    undoRedoData,
-  } = useModel(canvasModel);
+  // const { width, height, nodes, addGroup, removeGroup } =
+  //   useModel(canvasDataModel);
+  const { changeCanvas } = useModel(canvasModel);
   const ref = useRef<HTMLDivElement>(null);
-  const stageRef = useRef<Konva.Stage>(null);
-  const layerRef = useRef<Konva.Layer>(null);
-  const bgRef = useRef<Konva.Rect>(null);
+  const refCanvas = useRef<CanvasClass>();
   const size = useSize(ref);
-  window.stage = stageRef.current;
-  const tmpGroup = useRef<Array<Konva.Shape>>([]);
-  const tmpGroupKey = useRef<String>(uuid());
-  const ref2 = useRef<any>(null);
-  const ref3 = useRef<any>(null);
+  const update = useUpdate();
 
   useEffect(() => {
-    if (ref.current && !loading) {
-      const scaleX = (ref.current.offsetHeight - 120) / stageData.height;
-      const scaleY = (ref.current.offsetWidth - 120) / stageData.width;
+    let canvas = new CanvasClass('container', 1200, 700);
+    console.log('canvas', canvas);
+    canvas.init(newData as any);
+    canvas.on('clickNode', (itemModel) => {
+      console.log('itemModel', itemModel);
+      changeCanvas({
+        selectNode: itemModel,
+      });
+    });
+
+    window.canvas = canvas;
+    refCanvas.current = canvas;
+
+    if (ref.current) {
+      const { width, height } = canvas.canvasAttr;
+      const scaleX = (ref.current.offsetHeight - 120) / height;
+      const scaleY = (ref.current.offsetWidth - 120) / width;
       let scale = Math.min(scaleX, scaleY);
       if (scale > 1) scale = 1;
-      // console.log('nodes=>', nodes[0])
+      console.log('scale=>', scale);
+      canvas.updateCanvasAttr(scale);
+      // update();
+
       changeCanvas({
-        stageRef,
-        layerRef,
-        bgRef: bgRef,
-        canvasRef: ref,
-        selectNode: nodes[0],
-        editNode: null,
-        stageData: {
-          ...stageData,
-          width: width * scale,
-          height: height * scale,
-          scale,
-        },
+        canvasRef: refCanvas.current,
+        update: update,
       });
-      setTimeout(() => {
-        changeCanvasPanel();
-      }, 0);
     }
-    // shiftAndClick();
-    // console.log('mousetrap=>', mousetrap);
   }, []);
 
   useEffect(() => {
@@ -91,178 +187,35 @@ const Canvas: FC<ICanvasProps> = (props) => {
       ref.current.scrollLeft = left;
       ref.current.scrollTop = top;
     }
-  }, [stageData.scale, size]);
+  }, [size, refCanvas.current?.canvasAttr.scale]);
 
-  const changeCanvasPanel = () => {
-    changeCanvas({
-      selectNode: nodes[0],
-      editNode: null,
-    });
-  };
+  let style = {};
 
-  const getJsxItem = (item: DatModelItem) => {
-    switch (item.type) {
-      case 'color':
-        const bgModel = item as BgModel;
-        return (
-          <Rect
-            ref={bgRef}
-            key={item.id}
-            width={width}
-            height={height}
-            fill={bgModel.color}
-            shadowBlur={10}
-          />
-        );
-      case 'bg-image':
-        return (
-          <Image
-            ref={bgRef}
-            key={item.id}
-            {...item}
-            width={width}
-            height={height}
-          />
-        );
-      case 'text':
-        const textModel = item as TextModel;
-        return <TransformerText key={item.id} draggable {...textModel} />;
+  if (refCanvas.current && ref.current) {
+    const width = refCanvas.current.stage.getWidth();
+    const height = refCanvas.current.stage.getHeight();
+    const baseTop = height - (ref.current.clientHeight - 120);
+    const baseLeft = width - (ref.current.clientWidth - 120);
+    const top = baseTop > 0 ? baseTop : 0;
+    const left = baseLeft > 0 ? baseLeft : 0;
+    style = {
+      marginTop: top,
+      marginLeft: left,
+    };
+  }
+  console.log('render=>');
 
-      case 'text-input':
-        const textInputModel = item as TextModel;
-        return (
-          <TransformerTextInput
-            changeCanvasPanel={changeCanvasPanel}
-            key={item.id}
-            draggable
-            {...textInputModel}
-          />
-        );
+  const loading = false;
 
-      case 'group':
-        const groupModel = item as GroupModel;
-        console.log('groupModel=>', groupModel);
-        // return (<Group onC key={item.id} draggable {...groupModel}>
-        // </Group>)
-        return (
-          <TransformerGroup key={item.id} draggable {...groupModel}>
-            {/* <Rect width={302} height={168} x={0} y={33} fill="green"/>
-            <Circle ref={ref1} x={0} y={0} radius={50} fill="blue" />
-            <Circle ref={ref2} x={0} y={100} draggable={true} radius={50} fill="blue" /> */}
-            {groupModel?.children?.map((item: DatModelItem) => {
-              return getJsxItem({
-                ...item,
-                child: true,
-                name: `group-${item.id}`,
-              });
-            })}
-          </TransformerGroup>
-        );
-
-      case 'image':
-        return <TransformerImage key={item.id} {...item} />;
-      default:
-        break;
-    }
-  };
-
-  const getJsx = () => {
-    const data = undoRedoData.activeSnapshot || nodes;
-    return data.map((item: DatModelItem) => {
-      return getJsxItem(item);
-    });
-  };
-  const onStageClick = (e: any) => {
-    // tmpGroup.current
-    Promise.resolve().then(() => {
-      // 事件消息有延时
-      if (e?.type !== 'dblclick') {
-        // console.log('onStageClick', e?.currentTarget?.nodeType, JSON.stringify(e), e);
-        changeCanvasPanel();
-        console.log('canvas-click-e=>', e);
-        tmpGroup.current = [];
-        removeGroup(tmpGroupKey.current);
-      }
-    });
-
-    // const overlapping = Konva.Util.haveIntersection(ref1.current.getClientRect(), ref2.current.getClientRect());
-    // console.log('overlapping=>', overlapping, ref1.current.getClientRect(), ref2.current.getClientRect(),);
-  };
-
-  const onDragMove = useCallback((e: Konva.KonvaEventObject<DragEvent>) => {
-    if (layerRef.current)
-      detectionToLine(layerRef.current, e.target as Konva.Shape);
-  }, []);
-
-  const onDragEnd = useCallback(() => {
-    if (layerRef.current) removeLines(layerRef.current);
-  }, []);
-
-  const onStateMouseDown = (e: Konva.KonvaEventObject<MouseEvent>) => {
-    if (e.evt.shiftKey) {
-      tmpGroup.current.push({
-        ...e.target.attrs,
-        child: true,
-        draggable: false,
-      } as Konva.Shape);
-      if (tmpGroup.current.length > 1) {
-        addGroup(tmpGroupKey.current, tmpGroup.current);
-      }
-      // console.log('e.', e, e.evt.shiftKey);
-    } else {
-      console.log('e', e.target);
-      if (tmpGroup.current.length === 0 || tmpGroup.current.length === 1) {
-        tmpGroup.current = [
-          { ...e.target.attrs, child: true, draggable: false },
-        ];
-      }
-    }
-  };
-
-  const content = getJsx();
-  // console.log('content=>', content);
-  const top =
-    ref.current && stageData.height - (ref.current.clientHeight - 120) > 0
-      ? stageData.height - (ref.current.clientHeight - 120)
-      : 0;
-  const left =
-    ref.current && stageData.width - (ref.current.clientWidth - 120) > 0
-      ? stageData.width - (ref.current.clientWidth - 120)
-      : 0;
-  // const top = stageData.height - 835 >= 0 ? stageData.height - 835 : 0;
-  // const left = stageData.width - 0 >= 0 ? stageData.width - 0 : 0;
-  const style = {
-    marginTop: top,
-    marginLeft: left,
-  };
-  console.log('nodes=>', nodes);
-  // console.log('ref.current.scrollHeight', stageData.height, height, 835, 955, style)
   return (
     <React.Fragment>
-      {!loading && <ContextMenu />}
       <div className={styles.canvas} ref={ref}>
         <Toolbar />
         {loading ? (
           <Spin />
         ) : (
           <div style={style}>
-            <Stage
-              width={stageData.width}
-              height={stageData.height}
-              scaleX={stageData.scale}
-              scaleY={stageData.scale}
-              ref={stageRef}
-              onClick={onStageClick}
-              onMouseDown={onStateMouseDown}
-            >
-              <Layer
-                onDragMove={onDragMove}
-                onDragEnd={onDragEnd}
-                ref={layerRef}
-              >
-                {content}
-              </Layer>
-            </Stage>
+            <div id="container"></div>
           </div>
         )}
       </div>

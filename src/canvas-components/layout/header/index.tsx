@@ -10,7 +10,8 @@ import styles from './header.less';
 export interface IHeaderProps {}
 
 const Header: FC<IHeaderProps> = (props) => {
-  const { stageRef, updateUndoRedoData, undoRedoData } = useModel(canvasModel);
+  const { stageRef, updateUndoRedoData, undoRedoData, canvasRef } =
+    useModel(canvasModel);
   const { nodes } = useModel(canvasDataModel);
 
   const download = () => {
@@ -20,7 +21,8 @@ const Header: FC<IHeaderProps> = (props) => {
   };
 
   const getTemplate = () => {
-    console.log('节点内容=>', JSON.stringify(nodes));
+    const template = canvasRef.getTemplate();
+    console.log('节点内容=>', JSON.stringify(template));
     message.success('请在控制台查看JSON');
   };
 

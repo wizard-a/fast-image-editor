@@ -26,7 +26,7 @@ const CanvasPanel: FC<ICanvasPanelProps> = (props) => {
   const [form] = Form.useForm();
   const { width, height, changeCanvasModelDataItem, changeCanvasModel } =
     useModel(canvasDataModel);
-  const { selectNode, changeCanvas } = useModel(canvasModel);
+  const { selectNode, canvasRef } = useModel(canvasModel);
 
   const [state, setState] = useImmer({
     canvasOptionsValue: 'color',
@@ -47,14 +47,15 @@ const CanvasPanel: FC<ICanvasPanelProps> = (props) => {
   };
 
   const colorChange = (color: string) => {
-    console.log('color=>', color);
-    changeCanvasModelDataItem({
-      ...selectNode,
-      color,
-    });
+    // console.log('color=>', color);
+    canvasRef?.updateShapeAttrsById(selectNode.id, { fill: color });
+    // changeCanvasModelDataItem({
+    //   ...selectNode,
+    //   color,
+    // });
   };
 
-  // console.log('selectNode?.color=>', selectNode?.color, selectNode);
+  console.log('selectNode?.color=>', selectNode?.fill, selectNode);
   return (
     <div className={styles.canvasPanel}>
       <PanelTitle>画布</PanelTitle>
@@ -131,7 +132,7 @@ const CanvasPanel: FC<ICanvasPanelProps> = (props) => {
               buttonStyle="solid"
             />
             {state.canvasOptionsValue === 'color' ? (
-              <ColorSelect value={selectNode?.color} onChange={colorChange} />
+              <ColorSelect value={selectNode?.fill} onChange={colorChange} />
             ) : (
               <Button style={{ width: '100%' }} type="primary">
                 更换图片

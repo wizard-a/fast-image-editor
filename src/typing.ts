@@ -36,6 +36,10 @@ export type TextModel = BaseModel & Konva.TextConfig;
  * 矩形类
  */
 export type ReactModel = BaseModel & Konva.RectConfig;
+/**
+ * 矩形类
+ */
+export type ImageModel = BaseModel & Konva.RectConfig;
 
 export type GroupModel = BaseModel & {
   children: Array<DatModelItem>;
@@ -44,7 +48,12 @@ export type GroupModel = BaseModel & {
 /**
  * DataModel Item
  */
-export type DatModelItem = BgModel | TextModel | ReactModel | GroupModel;
+export type DatModelItem =
+  | BgModel
+  | TextModel
+  | ReactModel
+  | GroupModel
+  | ImageModel;
 
 // 画布内数据类
 export type DataModel = Array<DatModelItem>;

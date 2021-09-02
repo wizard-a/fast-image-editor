@@ -1,3 +1,7 @@
+/**
+ * 处理辅助线的工具方法
+ */
+
 import Konva from 'konva';
 
 let GUIDELINE_OFFSET = 5;

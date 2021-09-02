@@ -19,32 +19,16 @@ import styles from './toolbar.less';
 export interface IToolbarProps {}
 
 const Toolbar: FC<IToolbarProps> = (props) => {
-  const { stageRef, stageData, changeCanvas } = useModel(canvasModel);
-  const { width, height } = useModel(canvasDataModel);
-
+  const { canvasRef, update } = useModel(canvasModel);
+  const { scale } = canvasRef?.canvasAttr || {};
   const zoom = (type: string) => {
-    const stage = stageRef.current;
-    var oldScale = stage.scaleX();
-
-    let newScale = stageData.scale;
+    // console.log('canvas=>', scale);
     if (type === 'zoomIn') {
-      newScale = parseFloat(oldScale) + 0.1;
+      canvasRef?.zoomIn?.();
     } else {
-      newScale = parseFloat(oldScale) - 0.1;
+      canvasRef?.zoomOut?.();
     }
-    console.log('currScale', newScale);
-    newScale = parseFloat(parseFloat(newScale).toFixed(1));
-    // console.log('oldScale->', oldScale);
-
-    // console.log(oldScale, newScale)
-    if (newScale <= 0.3 || newScale >= 1.8) {
-      return;
-    }
-    const newWidth = width * newScale;
-    const newHeight = height * newScale;
-    changeCanvas({
-      stageData: { width: newWidth, height: newHeight, scale: newScale },
-    });
+    update();
   };
 
   return (
@@ -53,7 +37,7 @@ const Toolbar: FC<IToolbarProps> = (props) => {
         style={{ color: 'rgba(16, 38, 58, 0.65)', fontSize: 20 }}
         onClick={() => zoom('zoomOut')}
       />
-      <span className={styles.text}>{getScalePercent(stageData.scale)}</span>
+      <span className={styles.text}>{getScalePercent(scale)}</span>
       <ZoomInOutlined
         style={{ color: 'rgba(16, 38, 58, 0.65)', fontSize: 20 }}
         onClick={() => zoom('zoomIn')}
