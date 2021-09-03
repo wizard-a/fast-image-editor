@@ -178,7 +178,7 @@ const newData = [
   {
     id: 'bg',
     type: 'color',
-    color: '#F5EDDF',
+    fill: '#F5EDDF',
   },
   {
     name: 'node',
@@ -201,12 +201,12 @@ const newData = [
     skewX: 0,
     skewY: 0,
     visible: true,
-    height: 60.99999999999992,
+    // height: 60.99999999999992,
   },
   {
     width: 162.8722198534792,
     height: 123.15416489010939,
-    name: 'group-1',
+    name: 'node',
     draggable: true,
     id: '1',
     type: 'image',
@@ -226,12 +226,32 @@ const newData = [
   {
     width: 193.94019696803468,
     height: 146.45514772602604,
-    name: 'group-2',
+    name: 'node',
     draggable: true,
     id: '2',
     type: 'image',
     x: 142.42857142857156,
     y: 81.90962940621816,
+    isSelected: false,
+    rotation: 0,
+    scaleX: 1,
+    scaleY: 1,
+    offsetX: 0,
+    offsetY: 0,
+    skewX: 0,
+    skewY: 0,
+    // "child": true,
+    url: '/image2/14.jpeg',
+  },
+  {
+    width: 193.94019696803468,
+    height: 146.45514772602604,
+    name: 'node',
+    draggable: true,
+    id: '3',
+    type: 'image',
+    x: 342.42857142857156,
+    y: 181.90962940621816,
     isSelected: false,
     rotation: 0,
     scaleX: 1,
@@ -263,6 +283,7 @@ const newData = [
   //     ]
   // }
 ];
+
 const recordPush = (nodes: any, undoRedoData: any, updateUndoRedoData: any) => {
   // const currNodes =  undoRedoData.activeSnapshot || nodes;
   const newNodes = undoRedoData.activeSnapshot || nodes;

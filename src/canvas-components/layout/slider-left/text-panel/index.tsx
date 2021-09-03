@@ -9,8 +9,11 @@ import styles from './textPanel.less';
 export interface ITextPanelProps {}
 
 const TextPanel: FC<ITextPanelProps> = (props) => {
-  const { addText } = useModel(canvasDataModel);
+  const { canvasRef } = useModel(canvasModel);
 
+  const addText = () => {
+    canvasRef?.addText();
+  };
   return (
     <div className={styles.panel}>
       <Button

@@ -57,7 +57,15 @@ export const getScalePercent = (scale: number) => {
 };
 
 export const equal: any = (num1: number, num2: number) => {
-  return num1.toFixed(3) == num2.toFixed(3);
+  return num1.toFixed(2) == num2.toFixed(2);
+};
+
+export const equalOne: any = (num1: number) => {
+  if (num1 <= 1.03 && num1 >= 0.99) {
+    return true;
+  }
+
+  return false;
 };
 
 export const getShapeChildren = (children: Array<Shape>) => {

@@ -44,18 +44,29 @@ const image2 = [
 export interface IPanelPanelProps {}
 
 const ImagePanel: FC<IPanelPanelProps> = (props) => {
-  const { addImage } = useModel(canvasDataModel);
-
+  const { canvasRef } = useModel(canvasModel);
   return (
     <div className={styles.panel}>
       <div className={styles.left}>
         {image1.map((item) => {
-          return <img onClick={() => addImage(item)} key={item} src={item} />;
+          return (
+            <img
+              onClick={() => canvasRef?.addImage(item)}
+              key={item}
+              src={item}
+            />
+          );
         })}
       </div>
       <div className={styles.right}>
         {image2.map((item) => {
-          return <img onClick={() => addImage(item)} key={item} src={item} />;
+          return (
+            <img
+              onClick={() => canvasRef?.addImage(item)}
+              key={item}
+              src={item}
+            />
+          );
         })}
       </div>
     </div>

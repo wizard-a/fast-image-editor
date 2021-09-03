@@ -54,7 +54,7 @@ const newData = [
     skewX: 0,
     skewY: 0,
     visible: true,
-    height: 60.99999999999992,
+    // height: 60.99999999999992,
   },
   {
     width: 162.8722198534792,
@@ -139,18 +139,22 @@ const newData = [
 // const TransformerHtml2 = TransformerWrapper(Group);
 
 const Canvas: FC<ICanvasProps> = (props) => {
-  // const { width, height, nodes, addGroup, removeGroup } =
-  //   useModel(canvasDataModel);
-  const { changeCanvas } = useModel(canvasModel);
+  const { changeCanvas, loading } = useModel(canvasModel);
+  const { nodes } = useModel(canvasDataModel);
   const ref = useRef<HTMLDivElement>(null);
   const refCanvas = useRef<CanvasClass>();
   const size = useSize(ref);
   const update = useUpdate();
 
   useEffect(() => {
+    console.log('nodes', nodes, loading);
+    if (loading) {
+      return;
+    }
+
     let canvas = new CanvasClass('container', 1200, 700);
-    console.log('canvas', canvas);
-    canvas.init(newData as any);
+    // console.log('canvas', canvas);
+    canvas.init(nodes as any);
     canvas.on('clickNode', (itemModel) => {
       console.log('itemModel', itemModel);
       changeCanvas({
@@ -176,7 +180,18 @@ const Canvas: FC<ICanvasProps> = (props) => {
         update: update,
       });
     }
-  }, []);
+
+    return () => {
+      canvas.stage.destroyChildren();
+      canvas.stage.destroy();
+    };
+  }, [loading, nodes]);
+
+  // useEffect(() => {
+  //   if (loading) {
+
+  //   }
+  // }, [loading])
 
   useEffect(() => {
     // canvasRef
@@ -203,9 +218,8 @@ const Canvas: FC<ICanvasProps> = (props) => {
       marginLeft: left,
     };
   }
-  console.log('render=>');
 
-  const loading = false;
+  // const loading = false;
 
   return (
     <React.Fragment>

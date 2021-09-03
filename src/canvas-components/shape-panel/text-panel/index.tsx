@@ -42,15 +42,15 @@ export interface ITextPanelProps {}
 const TextPanel: FC<ITextPanelProps> = (props) => {
   const { width, height, changeCanvasModelDataItem, changeCanvasModel } =
     useModel(canvasDataModel);
-  const { selectNode, changeCanvas } = useModel(canvasModel);
-
+  const { selectNode, canvasRef } = useModel(canvasModel);
   // console.log('selectNode=>', selectNode);
 
   const changeFont = (key: string, value: string) => {
-    changeCanvasModelDataItem({
-      ...selectNode,
-      [key]: value,
-    });
+    canvasRef?.updateShapeAttrsById(selectNode.id, { [key]: value });
+    // changeCanvasModelDataItem({
+    //   ...selectNode,
+    //   [key]: value,
+    // });
   };
 
   const { run } = useThrottleFn(

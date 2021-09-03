@@ -34,18 +34,13 @@ const image2 = [
 export interface IBGPanelProps {}
 
 const BGPanel: FC<IBGPanelProps> = (props) => {
-  const { changeCanvasModelDataItem, nodes, width, height } =
-    useModel(canvasDataModel);
+  // const { changeCanvasModelDataItem, nodes, width, height } =
+  //   useModel(canvasDataModel);
+
+  const { canvasRef } = useModel(canvasModel);
 
   const addBg = (item: string) => {
-    const bg = nodes[0];
-    changeCanvasModelDataItem({
-      id: bg.id,
-      width,
-      height,
-      type: 'bg-image',
-      url: item,
-    });
+    canvasRef?.addBgImage(item);
   };
 
   return (

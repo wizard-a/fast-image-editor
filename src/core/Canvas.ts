@@ -1,7 +1,8 @@
 import Konva from 'konva';
-import { Image, Stage } from './shape';
+import { Image, Stage, Text, Transformer } from './shape';
 import type { DatModelItem, DataModel, BgModel } from '@/typing';
 import { removeLines, detectionToLine } from '@/core/utils/line';
+import { uuid, getCenterXY } from '../utils/util';
 import { addRectangle } from './utils/group';
 
 type canvasAttr = {
@@ -23,8 +24,10 @@ class Canvas {
   layer: Konva.Layer;
   tr: Konva.Transformer;
   listener: Listener;
+  bgNode: Konva.Shape | null;
   constructor(id: string, width: number, height: number) {
     this.data = [];
+    this.bgNode = null;
     this.listener = {};
     this.canvasAttr = {
       width,
@@ -41,7 +44,8 @@ class Canvas {
       this,
     ).stage;
 
-    this.tr = new Konva.Transformer();
+    this.tr = new Transformer({}, this).transformer;
+
     this.stage.on('click', (event) => {
       const modelItem = event.target.attrs as any;
       this.emit('clickNode', modelItem);
@@ -72,6 +76,12 @@ class Canvas {
     this._renderShape(data);
   }
 
+  selectBg(): void {
+    const bg = this.layer.find('#bg');
+    if (bg.length > 0) {
+      this.emit('clickNode', bg[0].attrs);
+    }
+  }
   /**
    * 添加一个图形
    * @param item
@@ -81,11 +91,71 @@ class Canvas {
     this._renderItemShape(item);
   }
 
+  copy(item: DatModelItem): void {
+    this.add(item);
+  }
+
+  addNode(node: DatModelItem, nodeWidth: number, nodeHeight: number): void {
+    const [x, y] = getCenterXY(
+      this.canvasAttr.width,
+      this.canvasAttr.height,
+      nodeWidth,
+      nodeHeight,
+    );
+    node.x = x;
+    node.y = y;
+    (node.name = 'node'), (node.draggable = true), this.add(node);
+  }
+
+  addText(): void {
+    const textWidth = 360;
+    const textHeight = 60;
+    const currTextDateItem: DatModelItem = {
+      id: uuid(),
+      fontSize: 60,
+      type: 'text-input',
+      text: '双击编辑文字',
+      fill: '#000',
+      width: textWidth,
+    };
+    this.addNode(currTextDateItem, textWidth, textHeight);
+  }
+
+  addImage(url: string): void {
+    const width = 400;
+    const height = 200;
+    const currTextDateItem: DatModelItem = {
+      id: uuid(),
+      type: 'image',
+      url,
+      width,
+      height,
+    };
+    this.addNode(currTextDateItem, width, height);
+  }
+
+  addBgImage(url: string): void {
+    const { id } = this.bgNode?.attrs;
+    const { width, height } = this.canvasAttr;
+    const node: DatModelItem = {
+      x: 0,
+      y: 0,
+      id,
+      width,
+      height,
+      type: 'bg-image',
+      url,
+    };
+    this.bgNode?.destroy();
+    this.add(node);
+    // this.
+  }
+
   private _renderShape(data: DataModel): void {
     data.forEach((item) => {
       this._renderItemShape(item);
     });
-    // this.layer.draw();
+    this.layer.draw();
   }
 
   private _renderItemShape(shape: DatModelItem): void {
@@ -96,26 +166,26 @@ class Canvas {
           width: this.canvasAttr.width,
           height: this.canvasAttr.height,
         });
-        // console.log('color=>', color, shape)
+        this.bgNode = color;
         this.layer.add(color);
         return;
 
+      case 'bg-image':
+        new Image(shape, this, (node) => {
+          this.bgNode = node;
+          // console.log('node===?', node);
+          node.moveToBottom(); // TODO: 放到最底层
+        });
+
+        return;
+
       case 'text-input':
+        new Text(shape, this);
         return;
       case 'image':
-        const imageShape = shape as BgModel;
-        new Image(imageShape, this.layer);
-        // Konva.Image.fromURL(imageShape.url, (darthNode: any) => {
-        //   darthNode.setAttrs({
-        //     ...imageShape
-        //   });
-        //   console.log('darthNode', darthNode);
-        //   this.layer.add(darthNode);
-        //   // this.layer.batchDraw();
-        // });
+        new Image(shape, this);
 
         return;
-
       default:
         break;
     }

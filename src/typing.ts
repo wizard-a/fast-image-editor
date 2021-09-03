@@ -14,7 +14,9 @@ export type ElementType =
 
 export type BaseModel = {
   id: string;
+  name?: string;
   type: ElementType;
+  draggable?: boolean;
   x?: number;
   y?: number;
 };

@@ -36,3 +36,26 @@
   /* Place on top of each other */
   grid-area: 1 / 1 / 2 / 2;
 }
+
+
+.core-context-menu {
+  display: none;
+  position: absolute;
+  width: 130px;
+  background-color: white;
+  box-shadow: 0 0 5px grey;
+  border-radius: 3px;
+  z-index: 1;
+}
+
+.core-context-menu button {
+  width: 100%;
+  background-color: white;
+  border: none;
+  margin: 0;
+  padding: 6px;
+}
+
+.core-context-menu button:hover {
+  background-color: lightgray;
+}

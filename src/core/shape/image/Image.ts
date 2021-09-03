@@ -1,9 +1,15 @@
 import Konva from 'konva';
+import Canvas from '../../Canvas';
 import type { DatModelItem, DataModel, ImageModel } from '@/typing';
 
 class Image {
-  constructor(shape: ImageModel, layer: Konva.Layer) {
+  constructor(
+    shape: ImageModel,
+    canvas: Canvas,
+    cbk?: (node: Konva.Shape) => void,
+  ) {
     Konva.Image.fromURL(shape.url, (darthNode: Konva.Shape) => {
+      cbk?.(darthNode);
       darthNode.setAttrs({
         ...shape,
       });
@@ -11,8 +17,7 @@ class Image {
       darthNode.on('dragend', (event: any) => {
         // console.log('event', event);
       });
-      // console.log('darthNode', darthNode);
-      layer.add(darthNode);
+      canvas.layer.add(darthNode);
       // this.layer.batchDraw();
     });
   }
