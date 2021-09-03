@@ -10,12 +10,13 @@ import styles from './header.less';
 export interface IHeaderProps {}
 
 const Header: FC<IHeaderProps> = (props) => {
-  const { stageRef, updateUndoRedoData, undoRedoData, canvasRef } =
-    useModel(canvasModel);
+  // const { stageRef, updateUndoRedoData, undoRedoData, canvasRef } =
+  //   useModel(canvasModel);
   const { nodes } = useModel(canvasDataModel);
+  const { canvasRef } = useModel(canvasModel);
 
   const download = () => {
-    var dataURL = stageRef.current.toDataURL({ pixelRatio: 0.5 });
+    var dataURL = canvasRef.stage.toDataURL({ pixelRatio: 0.5 });
     console.log('dataURL', dataURL);
     downloadURI(dataURL, '画布图像.png');
   };
@@ -27,11 +28,11 @@ const Header: FC<IHeaderProps> = (props) => {
   };
 
   const undo = () => {
-    updateUndoRedoData({ type: 'undo' });
+    // updateUndoRedoData({ type: 'undo' });
   };
 
   const redo = () => {
-    updateUndoRedoData({ type: 'redo' });
+    // updateUndoRedoData({ type: 'redo' });
   };
   return (
     <div className={styles.header}>
@@ -39,9 +40,9 @@ const Header: FC<IHeaderProps> = (props) => {
       <div className={styles.center}>
         <Tooltip placement="bottom" title="撤销">
           <Button
-            disabled={
-              undoRedoData.snapshots.length === 0 || undoRedoData.current === 0
-            }
+            // disabled={
+            //   undoRedoData.snapshots.length === 0 || undoRedoData.current === 0
+            // }
             style={{ marginRight: 20 }}
             onClick={undo}
             type="primary"
@@ -52,7 +53,7 @@ const Header: FC<IHeaderProps> = (props) => {
         </Tooltip>
         <Tooltip placement="bottom" title="重做">
           <Button
-            disabled={undoRedoData.current === -1}
+            // disabled={undoRedoData.current === -1}
             onClick={redo}
             type="primary"
             shape="circle"

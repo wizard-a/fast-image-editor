@@ -76,7 +76,7 @@ export const rectangleEnd = (stage: Konva.Stage, canvas: Canvas) => {
   if (!selectionRectangle.visible()) {
     return;
   }
-  // update visibility in timeout, so we can check it in click event
+
   setTimeout(() => {
     selectionRectangle.visible(false);
   });
@@ -86,9 +86,7 @@ export const rectangleEnd = (stage: Konva.Stage, canvas: Canvas) => {
   const selected = shapes.filter((shape) =>
     Konva.Util.haveIntersection(box, shape.getClientRect()),
   );
-  console.log('selected shape', selected);
+  // console.log('selected shape', selected);
   canvas.tr.nodes([...selected]);
-  canvas.layer.add(canvas.tr); // TODO: 可能重复添加
-
-  // canvas.layer.batchDraw();
+  canvas.layer.add(canvas.tr);
 };
