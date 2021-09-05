@@ -67,6 +67,7 @@ class Satge {
     });
 
     // 上下文菜单
+    console.log('context=>');
     this.contextMenu = createContextMenu(this, canvas);
 
     stage.on('contextmenu', (e: Konva.KonvaEventObject<any>) => {

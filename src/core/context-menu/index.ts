@@ -7,8 +7,12 @@ export const createContextMenu = (
   stage: Stage,
   canvas: Canvas,
 ): HTMLDivElement => {
+  const contextMenu = document.querySelector('.core-context-menu');
+  if (contextMenu) {
+    contextMenu.remove();
+  }
   const box = document.createElement('div');
-  box.className = 'core-context-menu ';
+  box.className = 'core-context-menu';
   box.innerHTML = `<div>
     <button id="context-menu-move-up">上移</button>
     <button id="context-menu-move-down">下移</button>
@@ -39,9 +43,11 @@ export const createContextMenu = (
       stage.currNode?.moveDown();
     });
 
+  console.log('11111111=>', document.getElementById('context-menu-move-top'));
   document
     .getElementById('context-menu-move-top')
     ?.addEventListener('click', () => {
+      // console.log('顶层', stage.currNode)
       stage.currNode?.moveToTop();
     });
 
@@ -49,6 +55,7 @@ export const createContextMenu = (
     .getElementById('context-menu-move-bottom')
     ?.addEventListener('click', () => {
       stage.currNode?.moveToBottom();
+      stage.currNode?.moveUp();
     });
 
   // copy

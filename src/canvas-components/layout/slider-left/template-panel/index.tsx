@@ -192,7 +192,7 @@ const TemplatePanel: FC<ITemplatePanelProps> = (props) => {
         {
           id: 'bg',
           type: 'color',
-          color: '#F5EDDF',
+          fill: '#F5EDDF',
         },
         {
           draggable: true,

@@ -16,48 +16,6 @@ export type CanvasModel = {
   nodes: DataModel;
 };
 
-// const initData: DataModel = [
-//   {
-//     id: 'bg',
-//     type: 'color',
-//     color: '#ccc',
-//   },
-//   //  {
-//   //    id: '1',
-//   //    type: 'text',
-//   //    text: 'ss11231231',
-//   //    fontSize: 22,
-//   //    fill: '#000',
-//   //  },
-//   //  {
-//   //    x: 150,
-//   //    y: 150,
-//   //    id: '3',
-//   //    type: 'text',
-//   //    text: 'abc',
-//   //    // fontSize: 22,
-//   //    fill: '#000',
-//   //  },
-//   {
-//     draggable: true,
-//     x: 422.35063663075414,
-//     y: 291.7723796804092,
-//     id: '28608db7-7f68-4fb4-bfc9-54522364c617',
-//     fontSize: 60,
-//     type: 'text-input',
-//     text: '双击编辑文字',
-//     fill: '#000',
-//     width: 360,
-//   },
-//   // {
-//   //   x: 200,
-//   //   y: 200,
-//   //   id: '6',
-//   //   type: 'image',
-//   //   url: 'https://konvajs.org/assets/darth-vader.jpg',
-//   // },
-// ];
-
 const initData: DataModel = [
   {
     id: 'bg',

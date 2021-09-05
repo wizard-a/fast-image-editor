@@ -161,6 +161,7 @@ class Canvas {
   private _renderItemShape(shape: DatModelItem): void {
     switch (shape.type) {
       case 'color':
+        console.log('shape', shape);
         const color = new Konva.Rect({
           ...shape,
           width: this.canvasAttr.width,
@@ -174,7 +175,10 @@ class Canvas {
         new Image(shape, this, (node) => {
           this.bgNode = node;
           // console.log('node===?', node);
-          node.moveToBottom(); // TODO: 放到最底层
+          setTimeout(() => {
+            node.moveToBottom(); // TODO: 放到最底层
+            // console.log('bottomm')
+          }, 0);
         });
 
         return;
