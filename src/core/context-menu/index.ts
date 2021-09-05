@@ -43,7 +43,6 @@ export const createContextMenu = (
       stage.currNode?.moveDown();
     });
 
-  console.log('11111111=>', document.getElementById('context-menu-move-top'));
   document
     .getElementById('context-menu-move-top')
     ?.addEventListener('click', () => {
