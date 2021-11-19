@@ -1,5 +1,6 @@
 import { defineConfig } from 'umi';
 const serverUrl = 'http://localhost:7001';
+const imageUrl = 'http://localhost:7002';
 
 export default defineConfig({
   nodeModulesTransform: {
@@ -19,6 +20,11 @@ export default defineConfig({
       target: serverUrl,
       changeOrigin: true,
       pathRewrite: { '^/api': '/api' },
+    },
+    '/upload': {
+      target: imageUrl,
+      // changeOrigin: true,
+      pathRewrite: { '^/upload': '/upload' },
     },
   },
 });

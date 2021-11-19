@@ -43,6 +43,7 @@
     "lodash": "^4.17.21",
     "mousetrap": "^1.6.5",
     "react-color": "^2.19.3",
+    "react-infinite-scroll-component": "^6.1.0",
     "react-konva": "^17.0.2-4",
     "react-konva-utils": "^0.1.7",
     "umi": "^3.5.3",

@@ -81,3 +81,13 @@ export type UndoRedoActionType = {
   type: 'push' | 'undo' | 'redo';
   data: DatModelItem | null;
 };
+
+export type PaginationParams = {
+  pageIndex: number;
+  pageSize: number;
+};
+
+export type IInfiniteScrollListResponseData = {
+  rows: Array<Record<string, any>>;
+  count: number;
+};

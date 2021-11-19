@@ -13,6 +13,7 @@ import { ColorSelect } from '@/components';
 import useModel from 'flooks';
 import canvasDataModel from '@/models1/canvasDataModel';
 import canvasModel from '@/models1/canvasModel';
+import { FileModal } from '@/bomponents';
 import styles from './canvasPanel.less';
 
 export interface ICanvasPanelProps {}
@@ -53,6 +54,14 @@ const CanvasPanel: FC<ICanvasPanelProps> = (props) => {
     //   ...selectNode,
     //   color,
     // });
+  };
+
+  const changeImage = () => {
+    console.log('===');
+    FileModal.show({
+      title: '选择图片',
+      width: 800,
+    });
   };
 
   console.log('selectNode?.color=>', selectNode?.fill, selectNode);
@@ -134,7 +143,11 @@ const CanvasPanel: FC<ICanvasPanelProps> = (props) => {
             {state.canvasOptionsValue === 'color' ? (
               <ColorSelect value={selectNode?.fill} onChange={colorChange} />
             ) : (
-              <Button style={{ width: '100%' }} type="primary">
+              <Button
+                onClick={changeImage}
+                style={{ width: '100%' }}
+                type="primary"
+              >
                 更换图片
               </Button>
             )}

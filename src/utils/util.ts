@@ -2,12 +2,18 @@ import type { DatModelItem, LocationItem } from '@/typing';
 import { ShapePanelEnum } from '@/enum';
 import Konva from 'konva';
 import { Shape, Group } from 'konva/lib/Shape';
+import LocalStorage from './local-storage';
 
 export const uuid = () => {
   const temp_url = URL.createObjectURL(new Blob());
   const uuid = temp_url.toString(); // blob:https://xxx.com/b250d159-e1b6-4a87-9002-885d90033be3
   URL.revokeObjectURL(temp_url);
   return uuid.substr(uuid.lastIndexOf('/') + 1);
+};
+
+export const getToken = () => {
+  console.log('getToken=>');
+  return `Bearer ${LocalStorage.get('token')}`;
 };
 
 export const getCenterXY = (
@@ -95,24 +101,3 @@ export const getShape = (shape: Group | Shape) => {
   }
   return currShape;
 };
-
-// export const getStageDataByZoom = (width: number, height: number, scale: number) => {
-
-//   let newScale = scale;
-//     if (type === 'zoomIn') {
-//       newScale = oldScale + 0.1;
-//     } else {
-//       newScale = oldScale - 0.1;
-//     }
-//     console.log('oldScale->', oldScale);
-//     if (newScale <= 0.3 || newScale >= 1.8) {
-//       return;
-//     }
-//     const newWidth = width * newScale;
-//     const newHeight = height * newScale;
-
-//   const newWidth = width * newScale;
-//   const newHeight = height * newScale;
-
-//   return { width: newWidth, height: newHeight, scale: newScale}
-// }
