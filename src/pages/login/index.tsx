@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Input, Form, Button } from 'antd';
+import { Input, Form, Button, Popover } from 'antd';
 import { login } from '@/services/user';
 import { history } from 'umi';
 import ProForm, { ProFormText, ProFormCaptcha } from '@ant-design/pro-form';
@@ -18,13 +18,20 @@ class Login extends Component {
   };
 
   render() {
+    const codeJsx = (
+      <div>
+        <img width="200" height="200" src={'./code.jpg'} />
+        <div>
+          扫描二维码，关注【前端有话说】
+          <br />
+          公众号，回复"编辑器" 即可获取
+        </div>
+      </div>
+    );
     return (
       <div className={styles.bg}>
         <div className={styles.wrapper}>
-          <div className={styles.slogan}>
-            图片 <br />
-            编辑器
-          </div>
+          <div className={styles.slogan}>{/* 图片编辑器 */}</div>
           <div className={styles.login}>
             <div className={styles.title}>登录</div>
             <ProForm
@@ -68,6 +75,9 @@ class Login extends Component {
                   },
                 ]}
               />
+              <Popover placement={'left'} content={codeJsx}>
+                <div className={styles.loginWay}>如何获取登录码？</div>
+              </Popover>
             </ProForm>
           </div>
         </div>

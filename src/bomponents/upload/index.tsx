@@ -10,6 +10,7 @@ export interface IUploadProps {
 }
 
 const MyUpload: FC<IUploadProps> = (props) => {
+  const { onUploadSuccess } = props;
   const [loading, setLoading] = useState<boolean>(false);
 
   const token = useToken();
@@ -26,6 +27,7 @@ const MyUpload: FC<IUploadProps> = (props) => {
       }
       if (info.file.status === 'done') {
         setLoading(false);
+        onUploadSuccess?.();
         message.success(`${info.file.name} 文件上传成功！`);
       } else if (info.file.status === 'error') {
         setLoading(false);
@@ -34,7 +36,7 @@ const MyUpload: FC<IUploadProps> = (props) => {
     },
   };
 
-  console.log('token=>', token);
+  // console.log('token=>', token);
   return (
     <Upload {...uploadProps}>
       <Button loading={loading} icon={<UploadOutlined />} type="primary">

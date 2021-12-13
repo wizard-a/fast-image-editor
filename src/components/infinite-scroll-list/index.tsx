@@ -9,6 +9,9 @@ import type {
 
 import styles from './index.less';
 
+export type InfiniteScrollListRef = {
+  reload: () => void;
+};
 export interface IInfiniteScrollListProps {
   style?: React.CSSProperties;
   className?: string;
@@ -17,10 +20,11 @@ export interface IInfiniteScrollListProps {
   ) => Promise<IInfiniteScrollListResponseData>;
   endMessage?: React.ReactNode;
   renderItem: (item: Record<string, any>) => React.ReactNode;
+  children: React.ReactNode;
 }
 
 const InfiniteScrollList = React.forwardRef(
-  (props: IInfiniteScrollListProps, ref: any) => {
+  (props: IInfiniteScrollListProps, ref) => {
     const { request, renderItem, style, className } = props;
 
     const pageIndexRef = useRef<number>(1);
@@ -34,7 +38,15 @@ const InfiniteScrollList = React.forwardRef(
       ref,
       () => {
         return {
-          aa: () => {},
+          reload: () => {
+            setState((draft: Record<string, any>) => {
+              draft.loading = false;
+              draft.data = [];
+              draft.hasMore = true;
+            });
+            pageIndexRef.current = 1;
+            loadMoreData();
+          },
         };
       },
       [],
@@ -48,11 +60,12 @@ const InfiniteScrollList = React.forwardRef(
         pageIndex: pageIndexRef.current,
       } as PaginationParams);
 
-      console.log('res=>12312', res);
+      pageIndexRef.current += 1;
+      // console.log('res=>12312', res);
       setState((draft: any) => {
         const newData = [...state.data, ...res.rows];
         draft.data = newData;
-        draft.hasMore = res.count !== newData.length;
+        draft.hasMore = newData.length < res.count;
       });
     };
 
@@ -62,21 +75,32 @@ const InfiniteScrollList = React.forwardRef(
 
     const classNames = classnames(styles.list, className);
 
+    console.log('hasMOre=>', state.hasMore);
     return (
-      <InfiniteScroll
-        dataLength={state.data.length}
-        next={loadMoreData}
-        hasMore={state.hasMore}
-        loader={'loader...'}
-        endMessage={'加载中...'}
-        scrollableTarget="scrollableDiv"
+      <div
+        id="scrollableDiv"
+        style={{
+          height: 500,
+          overflow: 'auto',
+          padding: '0 16px',
+          border: '1px solid rgba(140, 140, 140, 0.35)',
+        }}
       >
-        <div style={style} className={classNames}>
-          {state.data.map((item: any) => {
-            return renderItem(item);
-          })}
-        </div>
-      </InfiniteScroll>
+        <InfiniteScroll
+          dataLength={state.data.length}
+          next={loadMoreData}
+          hasMore={state.hasMore}
+          loader={state.hasMore ? 'loader...' : ''}
+          endMessage={'已经加载到底了！'}
+          scrollableTarget="scrollableDiv"
+        >
+          <div style={style} className={classNames}>
+            {state.data.map((item: any) => {
+              return renderItem(item);
+            })}
+          </div>
+        </InfiniteScroll>
+      </div>
     );
   },
 );

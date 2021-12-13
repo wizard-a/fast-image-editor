@@ -6,7 +6,10 @@ import { InfiniteScrollList } from '@/components';
 import request from '@/utils/request';
 import { getPage } from '@/services/photo';
 import Upload from '../upload/index';
+
 import type { PaginationParams } from '@/typing';
+import type { InfiniteScrollListRef } from '@/components/infinite-scroll-list';
+import styles from './index.less';
 
 const { TabPane } = Tabs;
 export interface IModalViewProps extends IViewProps {
@@ -18,12 +21,15 @@ export interface IModalViewProps extends IViewProps {
 const ModalView: FC<IModalViewProps> = (props) => {
   // const { title, onCancel, ...otherProps } = props;
 
-  const ref = React.useRef<any>();
+  const ref = React.useRef<InfiniteScrollListRef>();
   const requestPhotoList = async (params: PaginationParams) => {
     return await getPage(params.pageIndex, 20, 2);
   };
 
-  const onUploadSuccess = () => {};
+  const onUploadSuccess = () => {
+    console.log('upload success');
+    ref.current?.reload();
+  };
 
   return (
     <div>
@@ -34,7 +40,9 @@ const ModalView: FC<IModalViewProps> = (props) => {
             ref={ref}
             request={requestPhotoList}
             renderItem={(item) => {
-              return <img key={item.path} src={item.path} />;
+              return (
+                <img className={styles.img} key={item.path} src={item.path} />
+              );
             }}
           ></InfiniteScrollList>
         </TabPane>
