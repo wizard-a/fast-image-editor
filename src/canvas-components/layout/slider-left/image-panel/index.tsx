@@ -1,8 +1,12 @@
 import React, { FC } from 'react';
 import { Button } from 'antd';
 import useModel from 'flooks';
-import canvasDataModel from '@/models1/canvasDataModel';
 import canvasModel from '@/models1/canvasModel';
+import { InfiniteScrollList, WaterfallFlow } from '@/components';
+import { getPage } from '@/services/photo';
+
+import type { InfiniteScrollListRef } from '@/components/infinite-scroll-list';
+import type { ImageItem } from '@/components/waterfall-flow';
 
 import styles from './imagePanel.less';
 
@@ -45,9 +49,39 @@ export interface IPanelPanelProps {}
 
 const ImagePanel: FC<IPanelPanelProps> = (props) => {
   const { canvasRef } = useModel(canvasModel);
+  const ref = React.useRef<InfiniteScrollListRef>();
+
+  const requestPhotoList = async (params: PaginationParams) => {
+    return await getPage(params.pageIndex, 35, 2);
+  };
+
+  const onImageClick = (
+    e: React.MouseEvent<HTMLImageElement>,
+    data: ImageItem,
+  ) => {
+    console.log('e', e, data);
+  };
+
   return (
     <div className={styles.panel}>
-      <div className={styles.left}>
+      <InfiniteScrollList
+        className={styles.fileList}
+        // style={{ height: 532 }}
+        ref={ref}
+        request={requestPhotoList}
+      >
+        {(data) => {
+          return (
+            <WaterfallFlow
+              onClick={onImageClick}
+              size={111}
+              type="vertical"
+              data={data}
+            ></WaterfallFlow>
+          );
+        }}
+      </InfiniteScrollList>
+      {/* <div className={styles.left}>
         {image1.map((item) => {
           return (
             <img
@@ -68,7 +102,7 @@ const ImagePanel: FC<IPanelPanelProps> = (props) => {
             />
           );
         })}
-      </div>
+      </div> */}
     </div>
   );
 };

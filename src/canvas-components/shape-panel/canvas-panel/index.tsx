@@ -60,7 +60,7 @@ const CanvasPanel: FC<ICanvasPanelProps> = (props) => {
     console.log('===');
     FileModal.show({
       title: '选择图片',
-      width: 800,
+      width: 1200,
     });
   };
 

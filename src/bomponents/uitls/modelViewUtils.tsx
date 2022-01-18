@@ -1,7 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Modal } from 'antd';
+import { Modal, ConfigProvider } from 'antd';
 import type { ModalProps } from 'antd';
+
+import zhCN from 'antd/lib/locale/zh_CN';
 
 class ModalViewUtils {
   private div: HTMLDivElement;

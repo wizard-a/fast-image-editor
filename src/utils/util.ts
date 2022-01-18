@@ -101,3 +101,51 @@ export const getShape = (shape: Group | Shape) => {
   }
   return currShape;
 };
+
+/**
+ * 一维数组，转换成二维数据
+ * @param splitCount 每组的数量
+ */
+export function splitArray<T>(
+  data: Array<T>,
+  splitCount: number,
+): Array<Array<T>> {
+  if (data.length === 0) {
+    return [];
+  }
+  const result = [];
+  const group = Math.ceil(data.length / splitCount); // 可以拆分成多少组
+  let upGroupIndex = 0;
+  for (let i = 0; i < group; i++) {
+    const nextGroupIndex = upGroupIndex + splitCount;
+    const groupData = data.slice(upGroupIndex, nextGroupIndex);
+    result.push(groupData);
+    upGroupIndex = nextGroupIndex;
+  }
+  return result;
+}
+
+/**
+ * 拆分成group
+ * @param data
+ * @param groupCount
+ */
+export function splitGroupArray<T>(
+  data: Array<T>,
+  groupCount: number,
+): Array<Array<T>> {
+  if (data.length === 0) {
+    return [];
+  }
+  const result = [];
+  for (let i = 0; i < data.length; i++) {
+    const currData = data[i];
+    const index = i % groupCount;
+    if (result[index]) {
+      result[index].push(currData);
+    } else {
+      result[index] = [currData];
+    }
+  }
+  return result;
+}

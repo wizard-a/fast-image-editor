@@ -26,6 +26,7 @@ const MyUpload: FC<IUploadProps> = (props) => {
       if (info.file.status !== 'uploading') {
       }
       if (info.file.status === 'done') {
+        // console.log('info=>', info);
         setLoading(false);
         onUploadSuccess?.();
         message.success(`${info.file.name} 文件上传成功！`);
