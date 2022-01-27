@@ -18,6 +18,9 @@
 
 ### ✨ [演示地址](http://39.97.252.98:3000/)
 
+![示例图](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/97cb450cd5664d92b6d9ccffa4ef9998~tplv-k3u1fbpfcp-watermark.awebp)
+
+
 ## Install
 
 ```sh
@@ -96,6 +99,13 @@ yarn run test
 - [ ] 画布多个尺寸，支持多平台
 - [ ] 接入后台，实现登录，保存模板
 
+
+## 系列文章
+
+* [两个周末写了个图片编辑器](https://juejin.cn/post/6996926544182542366)
+* [给图片编辑器添加了辅助线](https://juejin.cn/post/6997926959917318181)
+* [给图片编辑器添加了【撤销重做】功能](https://juejin.cn/post/6998287682593882142)
+* [给图片编辑器添加了【框选节点】功能](https://juejin.cn/post/7003604608320798734)
 ## 项目架构
 
 项目用React umi开发框架，采用typescript编写，图片编辑功能用的是`react-konva`,考虑后期可能核心的编辑功能整体做成一个组件，所以没有umi里提供的`useModel`去做状态处理，采用的是`flooks`。
