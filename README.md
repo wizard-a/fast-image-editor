@@ -14,6 +14,13 @@
 
 > 一块开源图片编辑器，采用React+Typescript+React-Konva开发。
 
+### 推荐一款AI对话平台 EVO Chat
+>
+Evo Chat（Evolution Chat）是一个现代化的开源 AI 对话平台。致力于打造最优雅的大模型交互入口。它支持对接 ChatGPT，Deepseak， 等主流大语言模型（LLM）服务商，并在此基础上不断进化，识库增强、多模态处理、MCP（Model Control Protocol）等扩展能力，让 AI 能力更加丰富。支持全平台部署（Web、App、Windows、Mac、Linux），为用户提供无处不在的 AI 能力入口。
+
+* 访问地址：https://hevoai.com
+* github: https://github.com/evo-family/evo-chat
+
 ### 🏠 [Homepage](https://github.com/jiechud/fast-image-editor#readme)
 
 ### ✨ [演示地址](http://39.97.252.98:3000/)
